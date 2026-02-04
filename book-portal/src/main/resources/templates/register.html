@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | Book Portal</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border: 1px solid #aaa;
+        }
+
+        .header {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #0b6fa4;
+            color: #fff;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .section-title {
+            background: #0b6fa4;
+            color: #fff;
+            padding: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .row {
+            margin-bottom: 10px;
+        }
+
+        .row label {
+            display: inline-block;
+            width: 180px;
+            font-weight: bold;
+        }
+
+        .row input,
+        .row select {
+            width: 250px;
+            padding: 4px;
+        }
+
+        .actions {
+            margin-top: 20px;
+        }
+
+        .actions button {
+            padding: 6px 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        Register
+    </div>
+
+    <div class="section">
+        <p>Please fill out the form below</p>
+
+        <div class="section-title">
+            Create Login Information
+        </div>
+
+        <form th:action="@{/register}" method="post" th:object="${registerForm}">
+
+            <div class="row">
+                <label>First Name:</label>
+                <input type="text" th:field="*{firstName}" required>
+            </div>
+
+            <div class="row">
+                <label>Last Name:</label>
+                <input type="text" th:field="*{lastName}" required>
+            </div>
+
+            <div class="row">
+                <label>E-Mail Address:</label>
+                <input type="email" th:field="*{email}" required>
+            </div>
+
+            <div class="row">
+                <label>User Name:</label>
+                <input type="text" th:field="*{username}" required>
+            </div>
+
+            <div class="row">
+                <label>Password:</label>
+                <input type="password" th:field="*{password}" required>
+            </div>
+
+            <div class="row">
+                <label>Re-enter Password:</label>
+                <input type="password" th:field="*{confirmPassword}" required>
+            </div>
+
+            <div class="row">
+                <label>Secret Question:</label>
+                <select th:field="*{secretQuestion}">
+                    <option value="PET">What is your pet name?</option>
+                    <option value="CITY">What is your birth city?</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <label>Secret Answer:</label>
+                <input type="text" th:field="*{secretAnswer}">
+            </div>
+
+            <div class="actions">
+                <button type="submit">Register</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

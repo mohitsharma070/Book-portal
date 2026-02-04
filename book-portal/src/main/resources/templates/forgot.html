@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Forgot Login</title>
+</head>
+<body>
+
+<div style="width:360px;margin:100px auto;border:2px solid #3b6ea5;padding:15px;">
+
+    <h3>Forgot Login</h3>
+
+    <form th:action="@{/forgot}" method="post" th:object="${forgotForm}">
+
+        <div>
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required>
+        </div>
+
+        <br>
+
+        <button type="submit">Get Login Info</button>
+
+        <div th:if="${error}" style="color:red;">
+            <p th:text="${error}"></p>
+        </div>
+
+    </form>
+
+    <br>
+    <a href="/login">Back to Login</a>
+
+</div>
+
+</body>
+</html>

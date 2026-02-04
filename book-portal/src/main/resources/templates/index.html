@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Portal | Home</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .box {
+            width: 360px;
+            margin: 100px auto;
+            padding: 15px;
+            border: 2px solid #3b6ea5;
+            background-color: #ffffff;
+        }
+
+        .row {
+            margin-bottom: 10px;
+        }
+
+        .row label {
+            display: inline-block;
+            width: 140px;
+            font-weight: bold;
+        }
+
+        .row input {
+            width: 170px;
+            padding: 3px;
+        }
+
+        .checkbox-row {
+            margin-left: 140px;
+            font-size: 14px;
+        }
+
+        .buttons {
+            margin-top: 15px;
+            padding-left: 10px;
+        }
+
+        .buttons button,
+        .buttons a {
+            margin-right: 5px;
+            padding: 4px 12px;
+            background-color: #0b6fa4;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div th:if="${param.error}" style="color:red; margin-bottom:10px;">
+        Invalid username or password
+    </div>
+
+    <!-- IMPORTANT: This form POSTS to /login -->
+    <form th:action="@{/login}" method="post">
+
+        <div class="row">
+            <label>Customer Login:</label>
+            <input type="text" name="username" required>
+        </div>
+
+        <div class="row">
+            <label>Password:</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <div class="checkbox-row">
+            <input type="checkbox" disabled> Remember Me
+        </div>
+
+        <div class="buttons">
+            <button type="submit">Login</button>
+            <a href="/register">Register</a>
+            <a href="/forgot">Forgot</a>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>
