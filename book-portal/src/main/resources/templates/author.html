@@ -1,19 +1,125 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Author Search</title>
+    <title>Mostafa Maged</title>
+
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
-<body>
 
-<h2>Author Search</h2>
+<body topmargin="0" leftmargin="0">
 
-<ul>
-    <li th:each="author : ${authors}">
-        <a th:href="@{/authors/{id}(id=${author.authorId})}"
-           th:text="${author.authorName}">
-        </a>
-    </li>
-</ul>
+<!-- HEADER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td width="40%" class="logo-text">
+            Mostafa Maged Technologies
+        </td>
+
+        <td width="30%">
+            <b>
+                Welcome <span th:text="${#strings.toUpperCase(username)}">MOSTAFA MAGED</span>!
+            </b>
+            <font style="font-size:15px;" face="verdana, helvetica"
+                  th:text="${#dates.format(#dates.createNow(), 'MMMM dd, yyyy')}">
+                October 28, 2006
+            </font>
+        </td>
+
+        <td width="30%">
+            <a th:href="@{/logout}">
+                <font color="Black">&raquo; Logout</font>
+            </a>
+            &nbsp;&nbsp;&nbsp; »
+            <a th:href="@{/user-options}">User Options</a>
+        </td>
+    </tr>
+
+    <!-- MENU -->
+    <tr>
+        <td colspan="3" align="center">
+            <p class="menutd">
+                <span><font color="#85BFEB">»</font></span>
+                <a th:href="@{/authors}" class="menutdlinks">Author Search</a>
+                &nbsp;&nbsp;&nbsp;
+
+                <span><font color="#85BFEB">»</font></span>
+                <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>
+                &nbsp;&nbsp;&nbsp;
+
+                <span><font color="#85BFEB">»</font></span>
+                <a th:href="@{/categories}" class="menutdlinks">Category Search</a>
+            </p>
+        </td>
+    </tr>
+</table>
+
+<!-- SEARCH BAR (UI ONLY) -->
+<div align="center">
+    <table style="border: 1px solid #006080" width="100%" height="40">
+        <tr>
+            <td bgcolor="#0098CA" align="center">
+                <b><font color="#BDDFFF">FIND</font></b>
+                <input size="60%">
+                &nbsp;&nbsp;
+                <select>
+                    <option>Author</option>
+                    <option>Publisher</option>
+                    <option>Title</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- CONTENT -->
+<div align="center">
+    <table width="92%" cellpadding="4" cellspacing="3">
+        <tr>
+            <td bgcolor="#EEF5F8" align="center">
+                <h3>Author Search</h3>
+            </td>
+        </tr>
+
+        <tr>
+            <td bgcolor="#EEF5F8">
+
+                <!-- EMPTY STATE -->
+                <div th:if="${#lists.isEmpty(authors)}">
+                    <p>No authors found.</p>
+                </div>
+
+                <!-- AUTHOR LIST -->
+                <div th:if="${!#lists.isEmpty(authors)}">
+                    <div th:each="author : ${authors}">
+                        <a th:href="@{/authors/{id}(id=${author.id})}"
+                           th:text="${author.name}">
+                            Author Name
+                        </a>
+                        <br>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- FOOTER -->
+<br>
+<div align="center">
+    <font size="-1">
+        © <span th:text="${#dates.year(#dates.createNow())}"></span> Mostafa Maged
+    </font>
+    <br><br>
+
+    <a th:href="@{/subscriptions}">Subscription Services</a> |
+    <a th:href="@{/about}">About Us</a> |
+    <a th:href="@{/contact}">Contact Us</a> |
+    <a th:href="@{/privacy}">Privacy Policy</a> |
+    <a th:href="@{/admin}">Admin</a>
+</div>
 
 </body>
 </html>

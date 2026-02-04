@@ -19,7 +19,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBooksByAuthorAndCategory(Long authorId, Long categoryId) {
         return bookRepository
-                .findByAuthorAuthorIdAndCategoryCategoryId(authorId, categoryId);
+                .findByAuthorIdAndCategoryCategoryId(authorId, categoryId);
     }
 }
 

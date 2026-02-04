@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-    // Used for Author Search page
-    List<Author> findByAuthorNameContainingIgnoreCase(String authorName);
+    List<Author> findByNameContainingIgnoreCase(String name);
 }
+

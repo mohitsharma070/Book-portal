@@ -2,49 +2,75 @@ package com.example.bookportal.entity;
 
 import jakarta.persistence.*;
 @Entity
-@Table(name = "authors")
+@Table(name = "author")
 public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "author_id")
-    private Long authorId;
+    private Long id;
 
-    @Column(name = "author_name")
-    private String authorName;
+    @Column(name = "first_name")
+    private String firstName;
 
-    private String biography;
+    @Column(name = "last_name")
+    private String lastName;
 
-    public Author(){}
+    @Column(name = "email")
+    private String email;
 
-    public Author(Long authorId, String authorName, String biography) {
-        this.authorId = authorId;
-        this.authorName = authorName;
-        this.biography = biography;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "bio")
+    private String bio;
+
+    public Long getId() {
+        return id;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getBiography() {
-        return biography;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setBiography(String biography) {
-        this.biography = biography;
+    public String getEmail() {
+        return email;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
 }
 

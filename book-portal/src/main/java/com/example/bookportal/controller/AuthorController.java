@@ -1,6 +1,8 @@
 package com.example.bookportal.controller;
 
 import com.example.bookportal.service.AuthorService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,12 @@ public class AuthorController {
 
     // AUTHOR SEARCH PAGE
     @GetMapping
-    public String authorPage(Model model) {
+    public String authorPage(Model model,
+                             @AuthenticationPrincipal UserDetails userDetails) {
+
         model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("username", userDetails.getUsername());
+
         return "author";
     }
 
