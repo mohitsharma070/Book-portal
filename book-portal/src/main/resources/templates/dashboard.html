@@ -1,163 +1,155 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Mostafa Maged</title>
-
-    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
-
+    <title>Book Portal Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <meta http-equiv="Content-Language" content="en-us">
     <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-
-    <script type="text/javascript">
-        function search() {
-            var selectedOption = document.jump.menu.value;
-            if (selectedOption === "Author") {
-                location.href = "/authorsearch";
-            } else if (selectedOption === "Publisher") {
-                location.href = "/publishersearch";
-            } else if (selectedOption === "Title") {
-                location.href = "/titlesearch";
-            }
+    <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+    <meta name="ProgId" content="FrontPage.Editor.Document">
+    <script language="javascript">
+    function search() {
+        var selectedOption = document.jump.menu.value;
+        if (selectedOption == "Author") {
+            location.href = "/authors";
+        } else if (selectedOption == "Publisher") {
+            location.href = "/publishers";
+        } else if (selectedOption == "Title") {
+            location.href = "/books";
         }
+    }
     </script>
-
-    <!-- EXTRA SPACING -->
-    <style>
-        .header-space {
-            margin-bottom: 30px;
-        }
-
-        .content-space {
-            margin-top: 30px;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: bold;
-            color: #106194;
-        }
-    </style>
 </head>
 
 <body topmargin="0" leftmargin="0">
 
-<!-- ================= HEADER ================= -->
-<table border="0" cellpadding="10" cellspacing="0" width="100%" class="header-space">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
-        <td width="40%" class="logo-text">
-            Mostafa Maged Technologies
+        <td width="40%"><b style="font-size:24px; color:#106194;">BOOK PORTAL</b></td>
+        <td width="30%">&nbsp;<b>Welcome <span th:text="${#authentication.name}">user</span>!</b>
+            <font style='font-size:11;' color='#000000' face='verdana, helvetica'
+                  th:text="${#dates.format(#dates.createNow(), 'MMMM dd, yyyy')}">October 28, 2006</font>
         </td>
-
         <td width="30%">
-            <b>
-                Welcome <span th:text="${#strings.toUpperCase(username)}">MOSTAFA MAGED</span>!
-            </b>
-            <span style="font-size:15px"
-                  th:text="${today}">October 28, 2006</span>
-        </td>
-
-        <td width="30%" align="right">
             <form th:action="@{/logout}" method="post" style="display:inline;">
-                <input type="hidden"
-                       th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}" />
-                <button type="submit"
-                        style="background:none;border:none;cursor:pointer;">
-                    » Logout
-                </button>
+                <a href="javascript:void(0)" onclick="this.parentElement.submit();">
+                    <font color="Black">&raquo; Logout</font>
+                </a>
             </form>
-            &nbsp;&nbsp;
-            » <a href="/user-options">User Options</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Â» <a th:href="@{/user-options}"> User Options</a></b>&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
     </tr>
-
     <tr>
-        <td colspan="3" align="center">
-            » <a th:href="@{/authors}">Author Search</a>
-            &nbsp;&nbsp;&nbsp;
-            » <a href="/publishersearch">Publisher Search</a>
-            &nbsp;&nbsp;&nbsp;
-            » <a href="/categorysearch">Category Search</a>
+        <td width="100%" colspan="3" align="center">
+            <p class="menutd"><span style="newsheadline"><font color="#85BFEB">Â»</font></span>
+                <a th:href="@{/authors}" class="menutdlinks">Author Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">Â»</font></span>
+                <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">Â»</font></span>
+                <a th:href="@{/categories}" class="menutdlinks">Category Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </p>
         </td>
     </tr>
 </table>
 
-<!-- ================= SEARCH BAR ================= -->
-<form name="jump" style="margin:0;padding:0">
-    <div align="center" class="content-space">
-        <table style="border:1px solid #006080" width="100%" height="40">
-            <tr>
-                <td bgcolor="#0098CA" align="center">
-                    <b style="color:#BDDFFF">FIND</b>
-                    <input size="60%" name="query">
-                    <select name="menu">
-                        <option value="Author">Author</option>
-                        <option value="Publisher">Publisher</option>
-                        <option value="Title">Title</option>
-                    </select>
-
-                    <a href="javascript:search();"
-                       style="font-weight:bold;color:white;margin-left:10px;">
-                        SEARCH
-                    </a>
-
-                    <a href="/advancedsearch"
-                       style="font-weight:bold;color:white;margin-left:10px;">
-                        Advanced
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </div>
+<form name="jump" style="margin: 0; padding: 0">
+<div align="center">
+    <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
+        <tbody>
+        <tr>
+            <td bgColor="#0098CA" align="center">
+                <div align="center">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <p align="center"><b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
+                                    <input size="60%" name="T1">&nbsp;&nbsp;&nbsp;
+                                </p>
+                            </td>
+                            <td>
+                                <select name="menu">
+                                    <option value="Author">Author</option>
+                                    <option value="Publisher">Publisher</option>
+                                    <option value="Title">Title</option>
+                                </select>
+                                <input type="button" class="aa" value="Search" onclick="search();" style="cursor:pointer;">
+                                <input type="button" class="bb" value="Advanced" onclick="location.href='advancedsearch.html';" style="cursor:pointer;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </form>
 
-<!-- ================= CONTENT ================= -->
-<div align="center" class="content-space">
-    <b>Search over 10,000 titles from over 15 Publishers</b>
-</div>
+<table>
+    <tr>
+        <td width="100%" colspan="3">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td width="100%">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="72%" valign="top">
+                        <div align="center"><b><font size="3">Search over 10,000 titles from over 15 Publishers</font></b></div>
 
-<div align="center" class="content-space">
-    <table width="92%" cellpadding="6" cellspacing="3">
-        <tr bgcolor="#EEF5F8">
-            <td colspan="2">
-                <b>BOOK MANAGER</b><br>
-                Search books by Author, Publisher, or Category
-            </td>
-        </tr>
+                        <div align="center">
+                            <center>
+                                <table border="0" cellpadding="4" width="92%" cellspacing="3">
+                                    <tr>
+                                        <td width="100%" bgcolor="#EEF5F8" colspan="2" height="55" valign="top">
+                                            <div align="center"><font class="searchheader"><a href=""><font color="#106194">BOOK MANAGER</font></a></font>
+                                                &nbsp;<font class="searchtext"><br>
+                                                </font><font class="searchtext">Book Portal Manager
+                                                enables the user to search books in different ways. You can search by Author, Publisher, or Category</font></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="50%" bgcolor="#E4EFF5" height="55" valign="top">
+                                            <font class="searchheader"><a th:href="@{/authors}"><font color="#106194">Author SEARCH</font></a><br></font>
+                                            <font class="searchtext">Users can enter full or partial author name to receive complete valid results from the Database.</font>
+                                        </td>
+                                        <td width="50%" bgcolor="#E4EFF5" height="55" valign="top">
+                                            <font class="searchheader"><a th:href="@{/publishers}"><font color="#106194">Publisher SEARCH</font></a><br></font>
+                                            <font class="searchtext">Users can easily find multiple publishers.</font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="margin" width="50%" bgcolor="#EEF5F8" height="55" valign="top">
+                                            <font class="searchheader"><a th:href="@{/categories}"><font color="#106194">Category SEARCH</font></a><br></font>
+                                            <font class="searchtext">Users can browse books by category.</font>
+                                        </td>
+                                        <td class="margin" width="50%" bgcolor="#EEF5F8" height="55" valign="top">
+                                            <font class="searchheader"><a href="#"><font color="#106194">CUSTOMER SUPPORT</font></a><br></font>
+                                            <font class="searchtext">Users can depend on Book Portal support team with its domain expertise to assist with all questions and inputs.</font>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </center>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" colspan="3">
+            <div align="center"><font class="p" size="-1">Â©2006 Mostafa Maged</font></div>
 
-        <tr bgcolor="#E4EFF5">
-            <td width="50%">
-                <b>Author SEARCH</b><br>
-                Search by author name.
-            </td>
-            <td width="50%">
-                <b>Publisher SEARCH</b><br>
-                Search by publisher.
-            </td>
-        </tr>
-
-        <tr bgcolor="#EEF5F8">
-            <td width="50%">
-                <b>Category SEARCH</b><br>
-                Browse by category.
-            </td>
-            <td width="50%">
-                <b>CUSTOMER SUPPORT</b><br>
-                Assistance for all questions and inputs.
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- ================= FOOTER ================= -->
-<div align="center" class="content-space">
-    ©2006 Mostafa Maged<br><br>
-    <a href="#">Subscription Services</a> |
-    <a href="#">About Us</a> |
-    <a href="#">Contact Us</a> |
-    <a href="#">Privacy Policy</a> |
-    <a href="/admin">Admin</a>
-</div>
+            <div align="center"><a href=""><font size="2">Subscription Services</font></a><font size="2">&nbsp; |&nbsp; <u>
+                <a href="">About Us</a></u>&nbsp; |&nbsp; <u><a href="">
+                Contact Us</a></u>&nbsp; |&nbsp; <u><a href="">Privacy
+                Policy</a></u>&nbsp; |&nbsp;&nbsp; <a href="admin.html">Admin<br><br>
+            </a>
+            </font>
+            </div>
+        </td>
+    </tr>
+</table>
 
 </body>
 </html>

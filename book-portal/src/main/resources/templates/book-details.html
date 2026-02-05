@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${book.title}">Book Details</title>
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+    <meta name="ProgId" content="FrontPage.Editor.Document">
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td width="40%"><b style="font-size:24px; color:#106194;">BOOK PORTAL</b></td>
+        <td width="30%">&nbsp;<b>Welcome <span th:text="${username}">User</span>!</b>
+            <font style='font-size:11;' color='#000000' face='verdana, helvetica'
+                  th:text="${#dates.format(#dates.createNow(), 'MMMM dd, yyyy')}">Date</font>
+        </td>
+        <td width="30%">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <a href="javascript:void(0)" onclick="this.parentElement.submit();">
+                    <font color="Black">&raquo; Logout</font>
+                </a>
+            </form>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; » <a th:href="@{/user-options}"> User Options</a></b>&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" colspan="3" align="center">
+            <p class="menutd">
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/authors}" class="menutdlinks">Author Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/categories}" class="menutdlinks">Category Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </p>
+        </td>
+    </tr>
+</table>
+
+<div align="center">
+    <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
+        <tbody>
+        <tr>
+            <td bgColor="#0098CA" align="center">
+                <div align="center">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <p align="center"><b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
+                                    <input size="60%" name="T1">&nbsp;&nbsp;&nbsp;
+                                </p>
+                            </td>
+                            <td>
+                                <form name="jump" style="margin: 0; padding: 0">
+                                    <select name="menu">
+                                        <option value="Author">Author</option>
+                                        <option value="Publisher">Publisher</option>
+                                        <option value="Title">Title</option>
+                                    </select>
+                                    <input type="button" class="aa" value="Search" style="cursor:pointer;">
+                                    <input type="button" class="bb" value="Advanced" style="cursor:pointer;">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- BOOK DETAILS CONTENT -->
+    <table cellpadding="3" cellspacing="0" width="90%" border="0" style="border: 3 solid #0098CA" bgcolor="#EEF5F8" align="center">
+        <tr>
+            <td>
+                <div align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="90%">
+                        <tr>
+                            <td width="100%" valign="top">
+                                <font size="4"><b th:text="${book.title}">Book Title</b></font>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <hr noshade size="1" color="#C6C3C6" align="left">
+
+                    <table width="80%" border="0" cellpadding="10" align="center">
+                        <tr>
+                            <td width="30%" align="center" valign="top">
+                                <!-- Book Image -->
+                                <img th:src="${book.imageUrl}" 
+                                     th:alt="${book.title}"
+                                     width="200" height="270" 
+                                     style="border: 2px solid #086194;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display:none; width:200px; height:270px; border:2px solid #086194; background:#EEF5F8; text-align:center; padding-top:120px;">
+                                    <font color="#086194"><b>No Image<br>Available</b></font>
+                                </div>
+                            </td>
+                            <td width="70%" valign="top">
+                                <!-- Book Information Table -->
+                                <table width="100%" border="1" bordercolor="#086194" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+                                    <tr class="TitleRow">
+                                        <td colspan="2" align="center">
+                                            <font color="#FFFFFF"><b>Book Information</b></font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="30%" class="content"><b>Title:</b></td>
+                                        <td width="70%" class="content" th:text="${book.title}">Book Title</td>
+                                    </tr>
+                                    <tr bgcolor="#EEF5F8">
+                                        <td class="content"><b>Author:</b></td>
+                                        <td class="content">
+                                            <a th:href="@{/authors/{id}(id=${book.author.id})}"
+                                               th:text="${book.author.firstName + ' ' + book.author.lastName}">
+                                                Author Name
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="content"><b>Publisher:</b></td>
+                                        <td class="content">
+                                            <a th:href="@{/publishers/{id}(id=${book.publisher.publisherId})}"
+                                               th:text="${book.publisher.publisherName}">
+                                                Publisher Name
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr bgcolor="#EEF5F8">
+                                        <td class="content"><b>Category:</b></td>
+                                        <td class="content">
+                                            <a th:href="@{/categories/{id}(id=${book.category.categoryId})}"
+                                               th:text="${book.category.categoryName}">
+                                                Category Name
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="content"><b>Price:</b></td>
+                                        <td class="content">
+                                            <font color="#086194"><b>$<span th:text="${#numbers.formatDecimal(book.price, 1, 2)}">0.00</span></b></font>
+                                        </td>
+                                    </tr>
+                                    <tr bgcolor="#EEF5F8">
+                                        <td class="content"><b>Book ID:</b></td>
+                                        <td class="content" th:text="${book.bookId}">ID</td>
+                                    </tr>
+                                </table>
+
+                                <br>
+
+                                <!-- Action Buttons -->
+                                <table width="100%" border="0" cellpadding="5">
+                                    <tr>
+                                        <td align="center">
+                                            <input type="button" class="aa" value="Add to Cart" 
+                                                   style="padding: 5px 15px; cursor: pointer;">
+                                            &nbsp;&nbsp;
+                                            <input type="button" class="bb" value="Add to Wishlist" 
+                                                   style="padding: 5px 15px; cursor: pointer;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <a href="javascript:history.back()">« Back</a>
+                    <br><br>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<br>
+
+<table align="center">
+    <tr>
+        <td width="100%" colspan="3">
+            <div align="center"><font class="p" size="-1">©2006 Mostafa Maged</font></div>
+            <div align="center">
+                <a href=""><font size="2">Subscription Services</font></a><font size="2">&nbsp; |&nbsp;
+                <u><a href="">About Us</a></u>&nbsp; |&nbsp;
+                <u><a href="">Contact Us</a></u>&nbsp; |&nbsp;
+                <u><a href="">Privacy Policy</a></u>&nbsp; |&nbsp;&nbsp;
+                <a href="admin.html">Admin</a>
+            </font>
+            </div>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

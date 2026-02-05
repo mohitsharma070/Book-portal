@@ -26,9 +26,32 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("authorId") Long authorId
     );
 
-    List<Book> findByAuthorIdAndCategoryCategoryId(
+        List<Book> findByAuthorIdAndCategoryId(
             Long authorId,
             Long categoryId
+        );
+
+    @Query(value = """
+        SELECT 
+            c.category_id   AS categoryId,
+            c.category_name AS categoryName,
+            COUNT(b.book_id) AS bookCount
+        FROM books b
+        JOIN categories c ON b.category_id = c.category_id
+        WHERE b.publisher_id = :publisherId
+        GROUP BY c.category_id, c.category_name
+    """, nativeQuery = true)
+    List<CategoryBookCountProjection> findCategoryWiseBookCountByPublisher(
+            @Param("publisherId") Long publisherId
     );
+
+        List<Book> findByPublisherIdAndCategoryId(
+            Long publisherId,
+            Long categoryId
+        );
+
+    Long countByCategoryId(Long categoryId);
+
+    List<Book> findByCategoryId(Long categoryId);
 }
 

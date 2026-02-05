@@ -1,15 +1,12 @@
+
 package com.example.bookportal.entity;
 
-
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "books")
-public class Book {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_id")
-    private Long bookId;
+@AttributeOverride(name = "id", column = @Column(name = "book_id"))
+public class Book extends BaseEntity {
 
     private String title;
 
@@ -32,8 +29,8 @@ public class Book {
 
     public Book(){}
 
-    public Book(Long bookId, String title, Author author, Category category, Publisher publisher, Double price, String imageUrl) {
-        this.bookId = bookId;
+    public Book(Long id, String title, Author author, Category category, Publisher publisher, Double price, String imageUrl) {
+        this.setId(id);
         this.title = title;
         this.author = author;
         this.category = category;
@@ -42,13 +39,7 @@ public class Book {
         this.imageUrl = imageUrl;
     }
 
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
+    // id is inherited from BaseEntity
 
     public String getTitle() {
         return title;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Book Search Results</title>
+    <title>Category Search</title>
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
     <meta http-equiv="Content-Language" content="en-us">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -84,95 +84,53 @@
     </table>
 </div>
 
-<br><br>
-
-<div align="left">
-    &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="return compareBooks();">Compare</a>
-</div>
-
-<br><br>
-
-<!-- RESULTS TABLE -->
-<div align="center">
-    <table border="1" cellpadding="2" cellspacing="0" width="100%" 
-           style="border: 1px solid #033367" bordercolor="#C0C0C0">
-
-        <tr>
-            <td width="79%" align="center" class="tablecell" bgcolor="#033367" height="14" colspan="6">
-                <p align="left"><font size="1" color="#EFEFEF">SEARCH RESULTS</font></p>
-            </td>
-        </tr>
-
-        <tr>
-            <td width="17%" align="center" class="tablecell" bgcolor="#D6E3FF">&nbsp;</td>
-            <td width="17%" align="center" class="tablecell" bgcolor="#D6E3FF" height="16">
-                <b><font color="#000000" size="2">Book title</font></b>
-            </td>
-            <td width="16%" align="center" class="tablecell" bgcolor="#D6E3FF" height="16">
-                <b><font size="2">Publisher</font></b>
-            </td>
-            <td width="16%" align="center" class="tablecell" bgcolor="#D6E3FF" height="16">
-                <b><font color="#000000" size="2">Category</font></b>
-            </td>
-            <td width="16%" align="center" class="tablecell" bgcolor="#D6E3FF" height="16">
-                <b><font color="#000000" size="2">Author</font></b>
-            </td>
-            <td width="16%" align="center" class="tablecell" bgcolor="#D6E3FF" height="16">
-                <b><font color="#000000" size="2">Image</font></b>
-            </td>
-        </tr>
-
-        <!-- EMPTY STATE -->
-        <tr th:if="${books == null || #lists.isEmpty(books)}">
-            <td colspan="6" align="center" class="tablecell" height="32">
-                <b><font size="2" color="#086194">No books found</font></b>
-            </td>
-        </tr>
-
-        <!-- BOOK ROWS -->
-        <tr th:each="book : ${books}">
-            <td width="17%" align="center" class="tablecell">
-                <input type="checkbox" name="bookCompare" th:value="${book.id}">
-            </td>
-
-            <td width="17%" align="center" class="tablecell" height="32">
-                <u><font size="2">
-                    <a th:href="@{/book-details/{id}(id=${book.id})}" 
-                       th:text="${book.title}">Book Title</a>
-                </font></u>
-            </td>
-
-            <td width="16%" align="center" class="tablecell" height="32">
-                <font size="2" th:text="${book.publisher?.publisherName ?: 'N/A'}">Publisher</font>
-            </td>
-
-            <td width="16%" align="center" class="tablecell" height="32">
-                <font size="2" th:text="${book.category?.categoryName ?: 'N/A'}">Category</font>
-            </td>
-
-            <td width="16%" align="center" class="tablecell" height="32">
-                <font size="2" th:text="${book.author?.name ?: 'N/A'}">Author</font>
-            </td>
-
-            <td width="16%" align="center" class="tablecell" height="32">
-                <span th:if="${book.imageUrl != null && !#strings.isEmpty(book.imageUrl)}">
-                    <a th:href="@{/book-details/{id}(id=${book.id})}">
-                        <img th:src="${book.imageUrl}" width="128" height="173" border="0" 
-                             onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.no-img-text').style.display='inline';">
-                    </a>
-                    <font size="2" class="no-img-text" style="display:none;" color="#086194">No Image</font>
-                </span>
-                <font size="2" th:if="${book.imageUrl == null || #strings.isEmpty(book.imageUrl)}">N/A</font>
-            </td>
-        </tr>
-
-    </table>
-</div>
-
-<br><br>
-
-<!-- FOOTER -->
+<!-- MAIN CONTENT -->
 <table>
+    <tr>
+        <td width="100%" colspan="3">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td width="100%">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="72%" valign="top">
+                        <div align="center">
+                            <center>
+                                <table border="0" cellpadding="4" width="92%" cellspacing="3">
+                                    <tr>
+                                        <td width="150%" bgcolor="#EEF5F8" height="55" valign="top">
+                                            <div align="center">
+                                                <h3>Category Search</h3>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td bgcolor="#EEF5F8">
+                                            <!-- EMPTY STATE -->
+                                            <div th:if="${categories == null || #lists.isEmpty(categories)}">
+                                                <p>No categories found.</p>
+                                            </div>
+                                            
+                                            <!-- CATEGORY LIST -->
+                                            <div th:if="${categories != null && !#lists.isEmpty(categories)}">
+                                                <div th:each="category : ${categories}">
+                                                    <a th:href="@{/categories/{id}(id=${category.id})}"
+                                                       th:text="${category.categoryName}">
+                                                        Category Name
+                                                    </a><br>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </center>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     <tr>
         <td width="100%" colspan="3">
             <div align="center">
@@ -190,23 +148,6 @@
         </td>
     </tr>
 </table>
-
-<script>
-function compareBooks() {
-    const checkboxes = document.querySelectorAll('input[name="bookCompare"]:checked');
-    if (checkboxes.length === 0) {
-        alert('Please select at least one book to compare');
-        return false;
-    }
-    if (checkboxes.length > 5) {
-        alert('You can compare maximum 5 books at a time');
-        return false;
-    }
-    const bookIds = Array.from(checkboxes).map(cb => cb.value);
-    window.location.href = '/compare?bookIds=' + bookIds.join('&bookIds=');
-    return false;
-}
-</script>
 
 </body>
 </html>

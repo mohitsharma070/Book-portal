@@ -1,0 +1,34 @@
+package com.example.bookportal.controller;
+
+import com.example.bookportal.service.CategoryService;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/categories")
+public class CategoryController {
+
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
+    @GetMapping
+    public String categoryPage(Model model, Authentication auth) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("username", auth.getName());
+        return "category";
+    }
+
+    @GetMapping("/{id}")
+    public String categorySummary(@PathVariable Long id, Model model) {
+        model.addAttribute("category", categoryService.getCategoryById(id));
+        model.addAttribute("bookCount", categoryService.getCategoryBookCount(id));
+        return "category-summary";
+    }
+}

@@ -1,13 +1,11 @@
+
 package com.example.bookportal.entity;
 
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "author")
-public class Author {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Author extends BaseEntity {
 
     @Column(name = "first_name")
     private String firstName;
@@ -24,13 +22,7 @@ public class Author {
     @Column(name = "bio")
     private String bio;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // id is inherited from BaseEntity
 
     public String getFirstName() {
         return firstName;

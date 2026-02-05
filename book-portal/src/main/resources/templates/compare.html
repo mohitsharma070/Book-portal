@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Compare Books</title>
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+    <meta name="ProgId" content="FrontPage.Editor.Document">
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td width="40%"><b style="font-size:24px; color:#106194;">BOOK PORTAL</b></td>
+        <td width="30%">&nbsp;<b>Welcome <span th:text="${username}">User</span>!</b>
+            <font style='font-size:11;' color='#000000' face='verdana, helvetica'
+                  th:text="${#dates.format(#dates.createNow(), 'MMMM dd, yyyy')}">Date</font>
+        </td>
+        <td width="30%">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <a href="javascript:void(0)" onclick="this.parentElement.submit();">
+                    <font color="Black">&raquo; Logout</font>
+                </a>
+            </form>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; » <a th:href="@{/user-options}"> User Options</a></b>&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" colspan="3" align="center">
+            <p class="menutd">
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/authors}" class="menutdlinks">Author Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/categories}" class="menutdlinks">Category Search</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </p>
+        </td>
+    </tr>
+</table>
+
+<div align="center">
+    <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
+        <tbody>
+        <tr>
+            <td bgColor="#0098CA" align="center">
+                <div align="center">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <p align="center"><b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
+                                    <input size="60%" name="T1">&nbsp;&nbsp;&nbsp;
+                                </p>
+                            </td>
+                            <td>
+                                <form name="jump" style="margin: 0; padding: 0">
+                                    <select name="menu">
+                                        <option value="Author">Author</option>
+                                        <option value="Publisher">Publisher</option>
+                                        <option value="Title">Title</option>
+                                    </select>
+                                    <input type="button" class="aa" value="Search" style="cursor:pointer;">
+                                    <input type="button" class="bb" value="Advanced" style="cursor:pointer;">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- COMPARE BOOKS CONTENT -->
+    <table cellpadding="3" cellspacing="0" width="95%" border="0" style="border: 3 solid #0098CA" bgcolor="#EEF5F8" align="center">
+        <tr>
+            <td>
+                <div align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="95%">
+                        <tr>
+                            <td width="100%" valign="top">
+                                <font size="4"><b>Compare Books</b></font>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <hr noshade size="1" color="#C6C3C6" align="left">
+
+                    <div th:if="${books == null || books.isEmpty()}" align="center">
+                        <br>
+                        <font size="3" color="#086194"><b>No books selected for comparison</b></font>
+                        <br><br>
+                        <p class="content">
+                            Please select books from the <a th:href="@{/books}">books page</a> to compare them.
+                        </p>
+                        <br>
+                    </div>
+
+                    <div th:if="${books != null && !books.isEmpty()}">
+                        <!-- Comparison Table -->
+                        <table width="95%" border="1" bordercolor="#086194" cellspacing="0" cellpadding="5" align="center" bgcolor="#FFFFFF">
+                            <tr class="TitleRow">
+                                <td width="20%" align="center"><font color="#FFFFFF"><b>Feature</b></font></td>
+                                <td th:each="book : ${books}" align="center" width="*">
+                                    <font color="#FFFFFF"><b th:text="${book.title}">Book Title</b></font>
+                                </td>
+                            </tr>
+
+                            <!-- Book Images Row -->
+                            <tr bgcolor="#EEF5F8">
+                                <td class="content"><b>Image</b></td>
+                                <td th:each="book : ${books}" align="center">
+                                    <a th:href="@{/book-details/{id}(id=${book.id})}">
+                                        <img th:src="${book.imageUrl}" 
+                                             th:alt="${book.title}"
+                                             width="128" height="173" 
+                                             style="border: 1px solid #086194;"
+                                             onerror="this.style.display='none'; this.parentElement.querySelector('.no-img-placeholder').style.display='block';">
+                                        <div class="no-img-placeholder" style="display:none; width:128px; height:173px; border:1px solid #086194; background:#EEF5F8; text-align:center; padding-top:70px;">
+                                            <font color="#086194" size="2"><b>No Image</b></font>
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Title Row -->
+                            <tr>
+                                <td class="content"><b>Title</b></td>
+                                <td th:each="book : ${books}" class="content" align="center">
+                                    <a th:href="@{/book-details/{id}(id=${book.id})}" 
+                                       th:text="${book.title}">
+                                        Book Title
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Author Row -->
+                            <tr bgcolor="#EEF5F8">
+                                <td class="content"><b>Author</b></td>
+                                <td th:each="book : ${books}" class="content" align="center">
+                                    <a th:href="@{/authors/{id}(id=${book.author.id})}"
+                                       th:text="${book.author.firstName + ' ' + book.author.lastName}">
+                                        Author Name
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Publisher Row -->
+                            <tr>
+                                <td class="content"><b>Publisher</b></td>
+                                <td th:each="book : ${books}" class="content" align="center">
+                                    <a th:href="@{/publishers/{id}(id=${book.publisher.id})}"
+                                       th:text="${book.publisher.publisherName}">
+                                        Publisher Name
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Category Row -->
+                            <tr bgcolor="#EEF5F8">
+                                <td class="content"><b>Category</b></td>
+                                <td th:each="book : ${books}" class="content" align="center">
+                                    <a th:href="@{/categories/{id}(id=${book.category.id})}"
+                                       th:text="${book.category.categoryName}">
+                                        Category Name
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- Price Row -->
+                            <tr>
+                                <td class="content"><b>Price</b></td>
+                                <td th:each="book : ${books}" class="content" align="center">
+                                    <font color="#086194" size="3">
+                                        <b>$<span th:text="${#numbers.formatDecimal(book.price, 1, 2)}">0.00</span></b>
+                                    </font>
+                                </td>
+                            </tr>
+
+                            <!-- Book ID Row -->
+                            <tr bgcolor="#EEF5F8">
+                                <td class="content"><b>Book ID</b></td>
+                                <td th:each="book : ${books}" class="content" align="center" th:text="${book.id}">
+                                    ID
+                                </td>
+                            </tr>
+
+                            <!-- Action Row -->
+                            <tr>
+                                <td class="content"><b>Actions</b></td>
+                                <td th:each="book : ${books}" class="content" align="center">
+                                    <input type="button" class="aa" value="Add to Cart" 
+                                           style="padding: 3px 10px; cursor: pointer; font-size: 11px;">
+                                    <br><br>
+                                    <a th:href="@{/book-details/{id}(id=${book.id})}">View Details</a>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <br>
+                        <p class="content">
+                            <b>Number of books compared:</b> <span th:text="${#lists.size(books)}">0</span>
+                        </p>
+                    </div>
+
+                    <br>
+                    <a href="javascript:history.back()">« Back</a>
+                    <br><br>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<br>
+
+<table align="center">
+    <tr>
+        <td width="100%" colspan="3">
+            <div align="center"><font class="p" size="-1">©2006 Mostafa Maged</font></div>
+            <div align="center">
+                <a href=""><font size="2">Subscription Services</font></a><font size="2">&nbsp; |&nbsp;
+                <u><a href="">About Us</a></u>&nbsp; |&nbsp;
+                <u><a href="">Contact Us</a></u>&nbsp; |&nbsp;
+                <u><a href="">Privacy Policy</a></u>&nbsp; |&nbsp;&nbsp;
+                <a href="admin.html">Admin</a>
+            </font>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script>
+// JavaScript for future compare functionality
+function compareBooks() {
+    const checkboxes = document.querySelectorAll('input[name="bookCompare"]:checked');
+    if (checkboxes.length === 0) {
+        alert('Please select at least one book to compare');
+        return false;
+    }
+    if (checkboxes.length > 5) {
+        alert('You can compare maximum 5 books at a time');
+        return false;
+    }
+    const bookIds = Array.from(checkboxes).map(cb => cb.value);
+    window.location.href = '/compare?bookIds=' + bookIds.join('&bookIds=');
+    return false;
+}
+</script>
+
+</body>
+</html>

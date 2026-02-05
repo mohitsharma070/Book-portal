@@ -1,33 +1,24 @@
+
 package com.example.bookportal.entity;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "publishers")
-public class Publisher {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "publisher_id")
-    private Long publisherId;
+@AttributeOverride(name = "id", column = @Column(name = "publisher_id"))
+public class Publisher extends BaseEntity {
 
     @Column(name = "publisher_name")
     private String publisherName;
 
     public Publisher(){}
 
-    public Publisher(Long publisherId, String publisherName) {
-        this.publisherId = publisherId;
+    public Publisher(Long id, String publisherName) {
+        this.setId(id);
         this.publisherName = publisherName;
     }
 
-    public Long getPublisherId() {
-        return publisherId;
-    }
-
-    public void setPublisherId(Long publisherId) {
-        this.publisherId = publisherId;
-    }
+    // id is inherited from BaseEntity
 
     public String getPublisherName() {
         return publisherName;

@@ -18,13 +18,22 @@ public class BookController {
     }
 
     @GetMapping
-    public String booksPage(
-            @RequestParam Long authorId,
-            @RequestParam Long categoryId,
+        public String booksPage(
+            @RequestParam(required = false, name = "authorId") Long authorId,
+            @RequestParam(required = false, name = "publisherId") Long publisherId,
+            @RequestParam(required = false, name = "categoryId") Long categoryId,
             Model model) {
 
-        model.addAttribute("books",
-                bookService.getBooksByAuthorAndCategory(authorId, categoryId));
+        if (authorId != null && categoryId != null) {
+            model.addAttribute("books",
+                    bookService.getBooksByAuthorAndCategory(authorId, categoryId));
+        } else if (publisherId != null && categoryId != null) {
+            model.addAttribute("books",
+                    bookService.getBooksByPublisherAndCategory(publisherId, categoryId));
+        } else if (categoryId != null) {
+            model.addAttribute("books",
+                    bookService.getBooksByCategory(categoryId));
+        }
 
         return "books";
     }

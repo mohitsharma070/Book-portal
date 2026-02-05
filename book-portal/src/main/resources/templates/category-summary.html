@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${category.categoryName}">Category Summary</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- HEADER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td width="40%">
+            <b style="font-size:24px; color:#106194;">BOOK PORTAL</b>
+        </td>
+        <td width="30%">
+            &nbsp;<b>Welcome 
+            <span th:text="${#strings.toLowerCase(#authentication.name)}">user</span>! </b>
+            <font style='font-size:11px;' color='#000000' face='verdana, helvetica' 
+                  th:text="${#dates.format(#dates.createNow(),'MMMM dd, yyyy')}">
+                October 28, 2006
+            </font>
+        </td>
+        <td width="30%">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" style="background:none;border:none;cursor:pointer;font-size:12px;">
+                    <font color="Black">&raquo; Logout</font>
+                </button>
+            </form>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; » 
+            <a th:href="@{/user-options}">User Options</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" colspan="3" align="center">
+            <p class="menutd">
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/authors}" class="menutdlinks">Author Search</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="newsheadline"><font color="#85BFEB">»</font></span>
+                <a th:href="@{/categories}" class="menutdlinks">Category Search</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </p>
+        </td>
+    </tr>
+</table>
+
+<br><br>
+
+<!-- MAIN CONTENT AREA -->
+<table cellpadding="3" cellspacing="0" width="90%" border="0" style="border: 3px solid #0098CA" bgcolor="#EEF5F8" align="center">
+    <tr>
+        <td>
+            <div align="center">
+                <center>
+                    <!-- CATEGORY NAME -->
+                    <table border="0" cellpadding="0" cellspacing="0" width="75%">
+                        <tr>
+                            <td width="50%" valign="top">
+                                <font size="3"><b th:text="${category.categoryName}">Category Name</b></font>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <hr noshade size="1" color="#C6C3C6" align="left">
+
+                    <!-- CATEGORY TABLE -->
+                    <table width="50%" bordercolor="#086194" border="1" cellspacing="0" cellpadding="3" align="center" valign="middle">
+                        <TR class="ListTableRow">
+                            <td height="20" valign="middle" align="left" class="contentblue">
+                                <b>&nbsp;
+                                    <font color="#086194">■</font>&nbsp;
+                                    <span th:text="${category.categoryName}">Category Name</span>
+                                </b>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <table width="50%" border="0" align="center">
+                        <tr>
+                            <td class="content" height="17" width="50%" align="center">
+                                <a th:href="@{/books(categoryId=${category.id})}">
+                                    <font color="#086194">
+                                        <b><span th:text="${bookCount}">0</span>&nbsp;book(s)</b>
+                                    </font>
+                                </a>
+                            </td>
+                            <td class="content" height="17" width="50%" align="center">
+                                <a th:href="@{/books(categoryId=${category.id})}">View</a>
+                            </td>
+                        </tr>
+                    </table>
+
+                </center>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<br><br>
+
+<!-- FOOTER -->
+<table align="center">
+    <tr>
+        <td width="100%" colspan="3">
+            <div align="center">
+                <font class="p" size="-1">©2006 Mostafa Maged</font>
+            </div>
+            <div align="center">
+                <a href="#"><font size="2">Subscription Services</font></a>
+                <font size="2">&nbsp; |&nbsp; <u><a href="#">About Us</a></u>
+                &nbsp; |&nbsp; <u><a href="#">Contact Us</a></u>
+                &nbsp; |&nbsp; <u><a href="#">Privacy Policy</a></u>
+                &nbsp; |&nbsp;&nbsp; <a href="#">Admin</a>
+                <br><br>
+                </font>
+            </div>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

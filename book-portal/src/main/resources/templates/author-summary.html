@@ -1,29 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Author Summary</title>
+    <title th:text="${author.name}">Author Summary</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <meta charset="UTF-8">
 </head>
-<body>
 
-<h2 th:text="${author.name}">Author Name</h2>
+<body topmargin="0" leftmargin="0">
 
-<div th:if="${#lists.isEmpty(categories)}">
+<!-- HEADER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <!-- LOGO TEXT INSTEAD OF IMAGE -->
+        <td width="40%" class="logo-text">
+            <b>Mostafa Maged Technologies</b>
+        </td>
+
+        <td width="30%">
+            <b>Welcome <span th:text="${#strings.toUpperCase(#authentication.name)}"></span>!
+            </b>
+            <font style="font-size:15px;"
+                  th:text="${#dates.format(#dates.createNow(),'MMMM dd, yyyy')}">
+            </font>
+        </td>
+
+        <td width="30%">
+            <a th:href="@{/logout}"><font color="Black">&raquo; Logout</font></a>
+            &nbsp;&nbsp; »
+            <a th:href="@{/user-options}">User Options</a>
+        </td>
+    </tr>
+</table>
+
+<br><br>
+
+<!-- AUTHOR NAME -->
+<table width="90%" align="center" bgcolor="#EEF5F8" cellpadding="5">
+    <tr>
+        <td align="center">
+            <font size="3">
+                <b th:text="${author.name}">Author Name</b>
+            </font>
+            <hr size="1" color="#C6C3C6">
+        </td>
+    </tr>
+</table>
+
+<br>
+
+<!-- EMPTY STATE -->
+<div th:if="${#lists.isEmpty(categories)}" align="center">
     <p>No books found for this author.</p>
 </div>
 
-<div th:if="${!#lists.isEmpty(categories)}"
-     th:each="cat : ${categories}">
+<!-- CATEGORY LIST -->
+<div th:each="cat : ${categories}">
 
-    <strong th:text="${cat.categoryName}">Category</strong>
-    (
-    <span th:text="${cat.bookCount}">0</span> book(s)
-    )
+    <table width="50%" border="1" align="center" cellpadding="6"
+           bordercolor="#086194">
+        <tr class="ListTableRow">
+            <td class="contentblue" align="left">
+                <b>
+                    ▸ <span th:text="${cat.categoryName}">Category</span>
+                </b>
+            </td>
+        </tr>
+    </table>
 
-    <a th:href="@{/books(authorId=${author.id}, categoryId=${cat.categoryId})}">
-        View
-    </a>
+    <table width="50%" align="center">
+        <tr>
+            <td class="content" align="center" width="50%">
+                <a th:href="@{/books(authorId=${author.id},categoryId=${cat.categoryId})}">
+                    <font color="#086194">
+                        <b>
+                            <span th:text="${cat.bookCount}">0</span> book(s)
+                        </b>
+                    </font>
+                </a>
+            </td>
+
+            <td class="content" align="center" width="50%">
+                <a th:href="@{/books(authorId=${author.id},categoryId=${cat.categoryId})}">
+                    View
+                </a>
+            </td>
+        </tr>
+    </table>
 
     <br><br>
+
+</div>
+
+<!-- FOOTER -->
+<br>
+<div align="center">
+    <font size="-1">©2006 Mostafa Maged</font><br><br>
+    <a href="#">Subscription Services</a> |
+    <a href="#">About Us</a> |
+    <a href="#">Contact Us</a> |
+    <a href="#">Privacy Policy</a> |
+    <a href="#">Admin</a>
 </div>
 
 </body>
