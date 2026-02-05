@@ -40,15 +40,7 @@ public class SearchController {
                     .collect(Collectors.toList());
         } else if (type.equalsIgnoreCase("Title")) {
             List<Book> booksByTitle = bookRepository.findByTitleContainingIgnoreCase(query);
-            List<Book> booksByCategory = bookRepository.findByCategory_CategoryNameContainingIgnoreCase(query);
-            // Combine and remove duplicates
-            List<Book> combined = booksByTitle;
-            for (Book b : booksByCategory) {
-                if (!combined.contains(b)) {
-                    combined.add(b);
-                }
-            }
-            return combined.stream()
+            return booksByTitle.stream()
                     .map(book -> {
                         Map<String, Object> map = new HashMap<>();
                         map.put("title", book.getTitle());

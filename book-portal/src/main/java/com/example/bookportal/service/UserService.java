@@ -28,6 +28,13 @@ public class UserService {
             throw new RuntimeException("Passwords do not match");
         }
 
+        if (userRepository.findByUsername(form.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered");
+        }
+
         User user = new User();
         user.setUsername(form.getUsername());
         user.setEmail(form.getEmail());

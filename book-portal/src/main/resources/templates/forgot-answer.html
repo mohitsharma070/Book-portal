@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Forgot Password Verification</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+<div class="centered-box">
+    <h2 style="text-align:center;color:#106194;margin-bottom:20px;">Forgot Password</h2>
+    <form th:action="@{/forgot/verify}" method="post" th:object="${forgotAnswerForm}">
+        <input type="hidden" th:field="*{email}" th:value="${email}" />
+        <div style="margin-bottom:16px;">
+            <label><b>Secret Question:</b></label><br>
+            <span th:text="${secretQuestion}" style="color:#106194;"></span>
+        </div>
+        <div style="margin-bottom:16px;">
+            <label for="secretAnswer"><b>Secret Answer:</b></label><br>
+            <input type="text" th:field="*{secretAnswer}" id="secretAnswer" required style="width:100%;padding:8px;">
+        </div>
+        <button type="submit" style="width:100%;background:#106194;color:#fff;padding:10px 0;border:none;font-size:16px;">Verify Answer</button>
+        <div th:if="${error}" class="message-error" style="margin-top:16px;color:#c00;text-align:center;">
+            <p th:text="${error}"></p>
+        </div>
+    </form>
+    <div style="margin-top:18px;text-align:center;">
+        <a href="/forgot">Back</a>
+    </div>
+</div>
+</body>
+</html>

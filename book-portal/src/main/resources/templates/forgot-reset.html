@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Reset Password</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+<div class="centered-box">
+    <h2 style="text-align:center;color:#106194;margin-bottom:20px;">Reset Password</h2>
+    <form th:action="@{/forgot/reset}" method="post" th:object="${forgotAnswerForm}">
+        <input type="hidden" th:field="*{email}" />
+        <div style="margin-bottom:16px;">
+            <label for="newPassword"><b>New Password:</b></label><br>
+            <input type="password" th:field="*{newPassword}" id="newPassword" required style="width:100%;padding:8px;">
+        </div>
+        <div style="margin-bottom:16px;">
+            <label for="confirmPassword"><b>Confirm Password:</b></label><br>
+            <input type="password" th:field="*{confirmPassword}" id="confirmPassword" required style="width:100%;padding:8px;">
+        </div>
+        <button type="submit" style="width:100%;background:#106194;color:#fff;padding:10px 0;border:none;font-size:16px;">Reset Password</button>
+        <div th:if="${error}" class="message-error" style="margin-top:16px;color:#c00;text-align:center;">
+            <p th:text="${error}"></p>
+        </div>
+        <div th:if="${success}" class="message-success" style="margin-top:16px;color:#080;text-align:center;">
+            <p th:text="${success}"></p>
+        </div>
+    </form>
+    <div style="margin-top:18px;text-align:center;">
+        <a href="/">Back to Login</a>
+    </div>
+</div>
+</body>
+</html>

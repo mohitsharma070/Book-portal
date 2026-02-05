@@ -18,3 +18,8 @@ spring:
 server:
   port: 8080
 
+  spring:
+    datasource:
+      hikari:
+        maxLifetime: 1800000 # 30 minutes in milliseconds
+

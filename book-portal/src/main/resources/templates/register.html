@@ -3,88 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <title>Register | Book Portal</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" href="/style.css">
 </head>
 
+
 <body>
-
-<div class="page-container panel">
-
-    <div class="panel-header">
-        Register
-    </div>
-
-    <div class="panel-body">
-        <p>Please fill out the form below</p>
-
-        <!-- ❌ ERROR MESSAGE -->
-        <div th:if="${error}" class="message-error">
-            <p th:text="${error}"></p>
+    <div class="welcome-container" style="max-width:420px;margin:100px auto;padding:32px 24px;background:#fff;border-radius:8px;box-shadow:0 2px 16px rgba(16,97,148,0.08);border:2px solid #3b6ea5;text-align:center;">
+        <div class="welcome-title" style="color:#106194;font-size:2rem;font-weight:bold;margin-bottom:18px;">Create Your Account</div>
+        <div class="welcome-desc" style="color:#333;font-size:1.1rem;margin-bottom:28px;">
+            Register to explore, compare, and manage books, authors, publishers, and categories.
         </div>
-
-        <div class="section-title panel-header" style="margin: 0 0 15px 0;">
-            Create Login Information
-        </div>
-
-        <form th:action="@{/register}" method="post" th:object="${registerForm}">
-
-            <!-- ✅ CSRF TOKEN -->
-            <input type="hidden"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}" />
-
-            <div class="form-row">
-                <label>First Name:</label>
-                <input type="text" th:field="*{firstName}" required>
+        <form th:action="@{/register}" method="post" th:object="${registerForm}" style="margin-bottom:0;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div th:if="${error}" class="message-error" style="margin-bottom:10px;">
+                <p th:text="${error}"></p>
             </div>
-
-            <div class="form-row">
-                <label>Last Name:</label>
-                <input type="text" th:field="*{lastName}" required>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">First Name:</label><br>
+                <input type="text" th:field="*{firstName}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
             </div>
-
-            <div class="form-row">
-                <label>E-Mail Address:</label>
-                <input type="email" th:field="*{email}" required>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">Last Name:</label><br>
+                <input type="text" th:field="*{lastName}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
             </div>
-
-            <div class="form-row">
-                <label>User Name:</label>
-                <input type="text" th:field="*{username}" required>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">E-Mail Address:</label><br>
+                <input type="email" th:field="*{email}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
             </div>
-
-            <div class="form-row">
-                <label>Password:</label>
-                <input type="password" th:field="*{password}" required>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">User Name:</label><br>
+                <input type="text" th:field="*{username}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
             </div>
-
-            <div class="form-row">
-                <label>Re-enter Password:</label>
-                <input type="password" th:field="*{confirmPassword}" required>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">Password:</label><br>
+                <input type="password" th:field="*{password}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
             </div>
-
-            <div class="form-row">
-                <label>Secret Question:</label>
-                <select th:field="*{secretQuestion}" required>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">Re-enter Password:</label><br>
+                <input type="password" th:field="*{confirmPassword}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">Secret Question:</label><br>
+                <select th:field="*{secretQuestion}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
                     <option value="">-- Select a Question --</option>
                     <option value="PET">What is your pet name?</option>
                     <option value="CITY">What is your birth city?</option>
                 </select>
             </div>
-
-            <div class="form-row">
-                <label>Secret Answer:</label>
-                <input type="text" th:field="*{secretAnswer}" required>
+            <div style="margin-bottom:18px;text-align:left;">
+                <label style="font-weight:bold;color:#106194;">Secret Answer:</label><br>
+                <input type="text" th:field="*{secretAnswer}" required style="width:100%;padding:8px;margin-top:4px;box-sizing:border-box;">
             </div>
-
-            <div class="form-actions">
-                <button type="submit">Register</button>
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:0;">
+                <button type="submit" style="background:#106194;color:#fff;padding:8px 22px;border:none;font-size:15px;border-radius:4px;">Register</button>
+                <a th:href="@{/}" style="display:inline-block;text-align:center;background:#e0e7ef;color:#106194;font-weight:bold;padding:8px 22px;border:none;font-size:15px;text-decoration:none;border-radius:4px;line-height:32px;">Cancel</a>
             </div>
-
         </form>
-
     </div>
-</div>
 
 </body>
 </html>

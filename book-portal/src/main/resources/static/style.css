@@ -28,6 +28,18 @@ a:hover {
     padding: 15px;
     border: 2px solid #3b6ea5;
     background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+/* Ensure form fields stay inside the box */
+.centered-box input[type="email"],
+.centered-box input[type="text"],
+.centered-box input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin: 0;
 }
 
 .panel {
