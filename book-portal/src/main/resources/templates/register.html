@@ -3,90 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Register | Book Portal</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            width: 900px;
-            margin: 40px auto;
-            background: #fff;
-            border: 1px solid #aaa;
-        }
-
-        .header {
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            background: #0b6fa4;
-            color: #fff;
-        }
-
-        .section {
-            padding: 20px;
-        }
-
-        .section-title {
-            background: #0b6fa4;
-            color: #fff;
-            padding: 6px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .row {
-            margin-bottom: 10px;
-        }
-
-        .row label {
-            display: inline-block;
-            width: 180px;
-            font-weight: bold;
-        }
-
-        .row input,
-        .row select {
-            width: 250px;
-            padding: 4px;
-        }
-
-        .actions {
-            margin-top: 20px;
-        }
-
-        .actions button {
-            padding: 6px 20px;
-            font-weight: bold;
-        }
-
-        .error {
-            color: red;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
 </head>
 
 <body>
 
-<div class="container">
+<div class="page-container panel">
 
-    <div class="header">
+    <div class="panel-header">
         Register
     </div>
 
-    <div class="section">
+    <div class="panel-body">
         <p>Please fill out the form below</p>
 
         <!-- ❌ ERROR MESSAGE -->
-        <div th:if="${error}" class="error">
+        <div th:if="${error}" class="message-error">
             <p th:text="${error}"></p>
         </div>
 
-        <div class="section-title">
+        <div class="section-title panel-header" style="margin: 0 0 15px 0;">
             Create Login Information
         </div>
 
@@ -97,37 +33,37 @@
                    th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}" />
 
-            <div class="row">
+            <div class="form-row">
                 <label>First Name:</label>
                 <input type="text" th:field="*{firstName}" required>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>Last Name:</label>
                 <input type="text" th:field="*{lastName}" required>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>E-Mail Address:</label>
                 <input type="email" th:field="*{email}" required>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>User Name:</label>
                 <input type="text" th:field="*{username}" required>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>Password:</label>
                 <input type="password" th:field="*{password}" required>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>Re-enter Password:</label>
                 <input type="password" th:field="*{confirmPassword}" required>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>Secret Question:</label>
                 <select th:field="*{secretQuestion}" required>
                     <option value="">-- Select a Question --</option>
@@ -136,12 +72,12 @@
                 </select>
             </div>
 
-            <div class="row">
+            <div class="form-row">
                 <label>Secret Answer:</label>
                 <input type="text" th:field="*{secretAnswer}" required>
             </div>
 
-            <div class="actions">
+            <div class="form-actions">
                 <button type="submit">Register</button>
             </div>
 

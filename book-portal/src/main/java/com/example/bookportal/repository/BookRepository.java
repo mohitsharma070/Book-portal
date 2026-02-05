@@ -11,6 +11,8 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
+        List<Book> findByCategory_CategoryNameContainingIgnoreCase(String categoryName);
+    List<Book> findByTitleContainingIgnoreCase(String title);
 
     @Query(value = """
         SELECT 
@@ -26,10 +28,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("authorId") Long authorId
     );
 
-        List<Book> findByAuthorIdAndCategoryId(
-            Long authorId,
-            Long categoryId
-        );
+    List<Book> findByAuthorIdAndCategoryId(Long authorId, Long categoryId);
+    List<Book> findByAuthorId(Long authorId);
 
     @Query(value = """
         SELECT 
@@ -45,10 +45,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("publisherId") Long publisherId
     );
 
-        List<Book> findByPublisherIdAndCategoryId(
-            Long publisherId,
-            Long categoryId
-        );
+    List<Book> findByPublisherIdAndCategoryId(Long publisherId, Long categoryId);
+    List<Book> findByPublisherId(Long publisherId);
 
     Long countByCategoryId(Long categoryId);
 

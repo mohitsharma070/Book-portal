@@ -12,25 +12,23 @@
     <tr>
         <td align="center">
 
-            <table width="60%" bgcolor="#BDDFFF"
-                   style="border:3px solid #006080;margin-top:40px;"
-                   cellpadding="8">
+            <table width="60%" class="panel" cellpadding="8" style="margin-top:40px;">
 
-                <tr bgcolor="#0098CA">
+                <tr class="panel-header">
                     <td colspan="2" align="center">
-                        <b style="color:white;">Edit Profile</b>
+                        Edit Profile
                     </td>
                 </tr>
 
                 <!-- SUCCESS -->
                 <tr th:if="${success}">
-                    <td colspan="2" align="center" style="color:green;">
+                    <td colspan="2" align="center" class="message-success">
                         <b th:text="${success}"></b>
                     </td>
                 </tr>
 
                 <tr>
-                    <td colspan="2">
+                    <td colspan="2" class="panel-body">
 
                         <form th:action="@{/edit-profile}"
                               method="post"
