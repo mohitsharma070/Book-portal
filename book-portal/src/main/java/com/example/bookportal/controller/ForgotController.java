@@ -5,11 +5,19 @@ import com.example.bookportal.entity.User;
 import com.example.bookportal.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
-public class ForgotController {
+@RequestMapping("/forgot")
+@Validated
+public class ForgotController extends BaseController {
+    private static final Logger logger = LoggerFactory.getLogger(ForgotController.class);
 
     private final UserRepository userRepository;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;

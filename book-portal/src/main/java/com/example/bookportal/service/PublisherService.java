@@ -12,5 +12,8 @@ public interface PublisherService {
     Publisher getPublisherById(Long id);
 
     List<CategoryBookCountProjection> getCategoryWiseBooks(Long id);
-}
 
+    long getPublisherBookCount(Long id);
+
+    List<com.example.bookportal.entity.Book> getBooksByPublisher(Long publisherId);
+}

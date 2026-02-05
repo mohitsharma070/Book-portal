@@ -1,0 +1,104 @@
+<!-- Generic Search Bar Fragment -->
+<div align="center">
+    <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
+        <tbody>
+        <tr>
+            <td bgColor="#0098CA" align="center">
+                <div align="center">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <p align="center"><b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
+                                    <input size="60%" name="T1" id="searchInput" />&nbsp;&nbsp;&nbsp;
+                                </p>
+                            </td>
+                            <td>
+                                <select name="menu" id="searchType">
+                                    <option value="Author">Author</option>
+                                    <option value="Publisher">Publisher</option>
+                                    <option value="Title">Title</option>
+                                </select>
+                                <input type="button" class="aa" value="Search" onclick="genericSearch();" style="cursor:pointer;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="search-results" style="margin-top:20px;"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+function getCsrfToken() {
+    var csrfInput = document.querySelector('input[name="_csrf"]');
+    return csrfInput ? csrfInput.value : '';
+}
+function genericSearch() {
+    var query = document.getElementById('searchInput').value;
+    var type = document.getElementById('searchType').value;
+    var page = 0;
+    var size = 20;
+    var sort = type === 'Author' ? 'author' : (type === 'Publisher' ? 'publisher' : 'title');
+    var direction = 'ASC';
+    if (!query) {
+        document.getElementById('search-results').innerHTML = '<p>Please enter a search term.</p>';
+        return;
+    }
+    const request = {
+        query: query,
+        page: page,
+        size: size,
+        sort: sort,
+        direction: direction
+    };
+    fetch('/api/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCsrfToken()
+        },
+        body: JSON.stringify(request)
+    })
+    .then(response => response.json())
+    .then(data => {
+        let html = '';
+        if (data.items && data.items.length > 0) {
+            if (type === 'Author' || type === 'Publisher') {
+                const groupMap = {};
+                const keyField = type === 'Author' ? 'authorName' : 'publisherName';
+                data.items.forEach(item => {
+                    const key = item[keyField];
+                    if (!groupMap[key]) {
+                        groupMap[key] = 0;
+                    }
+                    groupMap[key]++;
+                });
+                html = '<div class="search-table-container" id="search-table-container">';
+                html += `<table class="search-table"><thead><tr><th>${type}</th><th>Books</th></tr></thead><tbody>`;
+                Object.keys(groupMap).forEach(name => {
+                    html += `<tr><td>${name}</td><td>${groupMap[name]}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
+                html += '</div>';
+            } else if (type === 'Title') {
+                html = '<div class="search-table-container" id="search-table-container">';
+                html += '<table class="search-table"><thead><tr><th>Title</th><th>Author</th><th>Publisher</th><th>Category</th></tr></thead><tbody>';
+                data.items.forEach(item => {
+                    html += `<tr><td>${item.title}</td><td>${item.authorName}</td><td>${item.publisherName}</td><td>${item.categoryName}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
+                html += '</div>';
+            }
+        } else {
+            html = '<p>No results found.</p>';
+        }
+        document.getElementById('search-results').innerHTML = html;
+    })
+    .catch(() => {
+        document.getElementById('search-results').innerHTML = '<p>Error fetching results.</p>';
+    });
+}
+</script>

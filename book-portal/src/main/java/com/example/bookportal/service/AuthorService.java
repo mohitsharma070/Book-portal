@@ -12,4 +12,8 @@ public interface AuthorService {
     Author getAuthorById(Long authorId);
 
     List<CategoryBookCountProjection> getCategoryWiseBooks(Long authorId);
+
+    long getAuthorBookCount(Long id);
+
+    List<com.example.bookportal.entity.Book> getBooksByAuthor(Long authorId);
 }

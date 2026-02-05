@@ -1,10 +1,18 @@
-
 package com.example.bookportal.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "books")
+@Table(name = "books",
+    indexes = {
+        @Index(name = "idx_books_title", columnList = "title"),
+        @Index(name = "idx_books_author", columnList = "author_id"),
+        @Index(name = "idx_books_category", columnList = "category_id"),
+        @Index(name = "idx_books_publisher", columnList = "publisher_id"),
+        @Index(name = "idx_books_price", columnList = "price"),
+        @Index(name = "idx_books_active", columnList = "active")
+    }
+)
 @AttributeOverride(name = "id", column = @Column(name = "book_id"))
 public class Book extends BaseEntity {
 
@@ -89,4 +97,3 @@ public class Book extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 }
-

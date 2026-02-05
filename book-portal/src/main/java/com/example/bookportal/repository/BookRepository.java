@@ -2,17 +2,18 @@ package com.example.bookportal.repository;
 
 import com.example.bookportal.entity.Book;
 import com.example.bookportal.repository.projection.CategoryBookCountProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
-        List<Book> findByCategory_CategoryNameContainingIgnoreCase(String categoryName);
-    List<Book> findByTitleContainingIgnoreCase(String title);
+public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
     @Query(value = """
         SELECT 
@@ -28,8 +29,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("authorId") Long authorId
     );
 
-    List<Book> findByAuthorIdAndCategoryId(Long authorId, Long categoryId);
-    List<Book> findByAuthorId(Long authorId);
+        List<Book> findByAuthorIdAndCategoryId(
+            Long authorId,
+            Long categoryId
+        );
 
     @Query(value = """
         SELECT 
@@ -45,11 +48,24 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("publisherId") Long publisherId
     );
 
-    List<Book> findByPublisherIdAndCategoryId(Long publisherId, Long categoryId);
-    List<Book> findByPublisherId(Long publisherId);
+        List<Book> findByPublisherIdAndCategoryId(
+            Long publisherId,
+            Long categoryId
+        );
 
     Long countByCategoryId(Long categoryId);
 
     List<Book> findByCategoryId(Long categoryId);
-}
 
+    Page<Book> findByAuthor_IdAndCategory_IdAndActiveTrue(Long authorId, Long categoryId, Pageable pageable);
+    Page<Book> findByPublisher_IdAndCategory_IdAndActiveTrue(Long publisherId, Long categoryId, Pageable pageable);
+    Page<Book> findByCategory_IdAndActiveTrue(Long categoryId, Pageable pageable);
+    Page<Book> findByAuthor_IdAndActiveTrue(Long authorId, Pageable pageable);
+    Page<Book> findByPublisher_IdAndActiveTrue(Long publisherId, Pageable pageable);
+
+    long countByAuthorId(Long authorId);
+    long countByPublisherId(Long publisherId);
+
+    List<Book> findByAuthor_IdAndActiveTrue(Long authorId);
+    List<Book> findByPublisher_IdAndActiveTrue(Long publisherId);
+}

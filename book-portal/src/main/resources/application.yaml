@@ -2,24 +2,5 @@ spring:
   application:
     name: book-portal
 
-  datasource:
-    url: jdbc:mysql://80.89.238.23:3306/demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: demo
-    password: demo_80
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
-  thymeleaf:
-    cache: false
-
-server:
-  port: 8080
-
-  spring:
-    datasource:
-      hikari:
-        maxLifetime: 1800000 # 30 minutes in milliseconds
-
+  profiles:
+    active: local

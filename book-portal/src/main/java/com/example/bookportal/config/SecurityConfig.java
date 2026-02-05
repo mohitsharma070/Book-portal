@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .permitAll()
                 );
 
+        // CSRF protection is enabled by default
         return http.build();
     }
 }

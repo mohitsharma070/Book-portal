@@ -50,58 +50,77 @@
     <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
     <meta name="ProgId" content="FrontPage.Editor.Document">
     <script>
+    function getCsrfToken() {
+        var csrfInput = document.querySelector('input[name="_csrf"]');
+        return csrfInput ? csrfInput.value : '';
+    }
     function search() {
         var query = document.jump.T1.value;
         var type = document.jump.menu.value;
+        var page = 0;
+        var size = 20;
+        var sort = type === 'Author' ? 'author' : (type === 'Publisher' ? 'publisher' : 'title');
+        var direction = 'ASC';
         if (!query) {
             document.getElementById('search-results').innerHTML = '<p>Please enter a search term.</p>';
             return;
         }
-        fetch(`/api/search?type=${type}&query=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                let html = '';
-                if (data.length === 0) {
-                    html = '<p>No results found.</p>';
-                } else {
-                    html = '<div class="search-table-container" id="search-table-container">';
-                    html += '<table class="search-table"><thead><tr>';
-                    // Table headers based on type
-                    if (type === 'Author') {
-                        html += '<th>Name</th><th>Books</th>';
-                    } else if (type === 'Title') {
-                        html += '<th>Title</th><th>Author</th><th>Publisher</th><th>Category</th>';
-                    } else if (type === 'Publisher') {
-                        html += '<th>Publisher</th><th>Books</th>';
-                    }
-                    html += '</tr></thead><tbody>';
-                    data.forEach(item => {
-                        html += '<tr>';
-                        if (type === 'Author') {
-                            html += `<td>${item.name}</td><td>${item.books}</td>`;
-                        } else if (type === 'Title') {
-                            html += `<td>${item.title}</td><td>${item.author}</td><td>${item.publisher}</td><td>${item.category}</td>`;
-                        } else if (type === 'Publisher') {
-                            html += `<td>${item.name}</td><td>${item.books}</td>`;
+        const request = {
+            query: query,
+            page: page,
+            size: size,
+            sort: sort,
+            direction: direction
+        };
+        fetch('/api/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCsrfToken()
+            },
+            body: JSON.stringify(request)
+        })
+        .then(response => response.json())
+        .then(data => {
+            let html = '';
+            if (data.items && data.items.length > 0) {
+                // Generic grouping logic for Author and Publisher
+                if (type === 'Author' || type === 'Publisher') {
+                    const groupMap = {};
+                    const keyField = type === 'Author' ? 'authorName' : 'publisherName';
+                    data.items.forEach(item => {
+                        const key = item[keyField];
+                        if (!groupMap[key]) {
+                            groupMap[key] = 0;
                         }
-                        html += '</tr>';
+                        groupMap[key]++;
+                    });
+                    html = '<div class="search-table-container" id="search-table-container">';
+                    html += `<table class="search-table"><thead><tr><th>${type}</th><th>Books</th></tr></thead><tbody>`;
+                    Object.keys(groupMap).forEach(name => {
+                        html += `<tr><td>${name}</td><td>${groupMap[name]}</td></tr>`;
                     });
                     html += '</tbody></table>';
+                    html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
+                    html += '</div>';
+                } else if (type === 'Title') {
+                    html = '<div class="search-table-container" id="search-table-container">';
+                    html += '<table class="search-table"><thead><tr><th>Title</th><th>Author</th><th>Publisher</th><th>Category</th></tr></thead><tbody>';
+                    data.items.forEach(item => {
+                        html += `<tr><td>${item.title}</td><td>${item.authorName}</td><td>${item.publisherName}</td><td>${item.categoryName}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
                     html += '</div>';
                 }
-                    // Hide search table when clicking outside
-                    document.addEventListener('click', function(event) {
-                        var tableContainer = document.getElementById('search-table-container');
-                        var searchResults = document.getElementById('search-results');
-                        if (tableContainer && !tableContainer.contains(event.target) && searchResults && searchResults.innerHTML.trim() !== '') {
-                            searchResults.innerHTML = '';
-                        }
-                    });
-                document.getElementById('search-results').innerHTML = html;
-            })
-            .catch(() => {
-                document.getElementById('search-results').innerHTML = '<p>Error fetching results.</p>';
-            });
+            } else {
+                html = '<p>No results found.</p>';
+            }
+            document.getElementById('search-results').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('search-results').innerHTML = '<p>Error fetching results.</p>';
+        });
     }
     </script>
 </head>
@@ -130,7 +149,7 @@
                     &raquo; Logout
                 </button>
             </form>
-            &nbsp;&nbsp;&nbsp; Â»
+            &nbsp;&nbsp;&nbsp; »
             <a th:href="@{/user-options}">User Options</a>
         </td>
     </tr>
