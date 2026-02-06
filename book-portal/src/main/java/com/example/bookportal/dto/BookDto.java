@@ -28,6 +28,9 @@ public class BookDto {
     private String categoryName;
     private String publisherName;
 
+    // No-argument constructor for frameworks and default instantiation
+    public BookDto() {}
+
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -49,4 +52,21 @@ public class BookDto {
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     public String getPublisherName() { return publisherName; }
     public void setPublisherName(String publisherName) { this.publisherName = publisherName; }
+
+    // Projection constructor for JPQL
+    public BookDto(Long id, String title, Double price, String imageUrl,
+                   Long authorId, String authorName,
+                   Long categoryId, String categoryName,
+                   Long publisherId, String publisherName) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.authorId = authorId;
+        this.authorName = authorName;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.publisherId = publisherId;
+        this.publisherName = publisherName;
+    }
 }

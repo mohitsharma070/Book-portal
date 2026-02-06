@@ -1,11 +1,14 @@
 package com.example.bookportal.service.impl;
 
+import com.example.bookportal.entity.Book;
 import com.example.bookportal.entity.Publisher;
 import com.example.bookportal.exception.ValidationException;
 import com.example.bookportal.repository.BookRepository;
 import com.example.bookportal.repository.PublisherRepository;
 import com.example.bookportal.repository.projection.CategoryBookCountProjection;
 import com.example.bookportal.service.PublisherService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.slf4j.Logger;
@@ -58,8 +61,8 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
-    public List<com.example.bookportal.entity.Book> getBooksByPublisher(Long publisherId) {
-        logger.info("Fetching active books for publisher id: {}", publisherId);
-        return bookRepository.findByPublisher_IdAndActiveTrue(publisherId);
+    public Page<Book> getBooksByPublisher(Long publisherId, Pageable pageable) {
+        logger.info("Fetching active books for publisher id: {} with pagination", publisherId);
+        return bookRepository.findByPublisher_IdAndActiveTrue(publisherId, pageable);
     }
 }
