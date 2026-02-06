@@ -29,13 +29,13 @@ public class ForgotController extends BaseController {
     }
 
     // STEP 1: Show Forgot Page
-    @GetMapping("/forgot")
+    @GetMapping
     public String forgotPage(Model model) {
         model.addAttribute("forgotForm", new ForgotForm());
-        return "forgot";   // old forgot.html
+        return "forgot";
     }
 
-    @PostMapping("/forgot")
+    @PostMapping
     public String processForgot(ForgotForm form, Model model) {
         User user = userRepository.findByEmail(form.getEmail()).orElse(null);
         if (user == null) {
@@ -50,7 +50,7 @@ public class ForgotController extends BaseController {
         return "forgot-answer";
     }
 
-    @PostMapping("/forgot/verify")
+    @PostMapping("/verify")
     public String verifySecretAnswer(com.example.bookportal.dto.ForgotAnswerForm form, Model model) {
         User user = userRepository.findByEmail(form.getEmail()).orElse(null);
         if (user == null) {
@@ -69,7 +69,7 @@ public class ForgotController extends BaseController {
         return "forgot-reset";
     }
 
-    @PostMapping("/forgot/reset")
+    @PostMapping("/reset")
     public String resetPassword(com.example.bookportal.dto.ForgotAnswerForm form, Model model) {
         User user = userRepository.findByEmail(form.getEmail()).orElse(null);
         if (user == null) {

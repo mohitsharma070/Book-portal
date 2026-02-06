@@ -52,6 +52,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(form.getPassword()));
         user.setSecretAnswer(form.getSecretAnswer());
         user.setSecretQuestion(form.getSecretQuestion());
+        user.setRole("USER"); // Always set role to USER for new registrations
 
         userRepository.save(user);
         logger.info("User registered: {}", form.getUsername());

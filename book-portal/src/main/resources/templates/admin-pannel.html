@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <style>
+        .three-dot {
+            cursor: pointer;
+            font-size: 22px;
+            padding: 0 8px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background: #fff;
+            border: 1px solid #ccc;
+            z-index: 100;
+            min-width: 120px;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 16px;
+            color: #106194;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-panel-container">
+    <h2 style="color:#106194;text-align:center;margin-bottom:20px;">Admin Panel</h2>
+    <div align="center">
+        <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
+            <tbody>
+            <tr>
+                <td bgColor="#0098CA" align="center">
+                    <div align="center">
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <p align="center"><b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
+                                        <input size="60%" name="T1" id="searchInput" />&nbsp;&nbsp;&nbsp;
+                                    </p>
+                                </td>
+                                <td>
+                                    <select name="menu" id="searchType">
+                                        <option value="Author">Author</option>
+                                        <option value="Publisher">Publisher</option>
+                                        <option value="Title">Title</option>
+                                    </select>
+                                    <input type="button" class="aa" value="Search" onclick="searchBooks();" style="cursor:pointer;">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="search-results" style="margin-top:20px;"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${success}" style="color:green;text-align:center;margin-bottom:10px;">
+        <p th:text="${success}"></p>
+    </div>
+    <div th:if="${error}" style="color:red;text-align:center;margin-bottom:10px;">
+        <p th:text="${error}"></p>
+    </div>
+    <div id="bookList">
+        <table class="search-table" style="width:100%;margin-top:20px;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bookTableBody">
+                <!-- JS will render rows here -->
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+</div>
+<script>
+function getCsrfToken() {
+    var csrfInput = document.querySelector('input[name="_csrf"]');
+    return csrfInput ? csrfInput.value : '';
+}
+function searchBooks() {
+    const query = document.getElementById('searchInput').value;
+    const type = document.getElementById('searchType').value;
+    if (!query) {
+        document.getElementById('bookTableBody').innerHTML = '<tr><td colspan="5">Please enter a search term.</td></tr>';
+        return;
+    }
+    fetch(`/admin/books/search?q=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}`)
+        .then(response => response.json())
+        .then(data => {
+            const books = Array.isArray(data.data) ? data.data : [];
+            let html = '';
+            if (books.length === 0) {
+                html = '<tr><td colspan="5">No results found.</td></tr>';
+            } else {
+                books.forEach(book => {
+                    html += `<tr>
+                        <td>${book.title}</td>
+                        <td>${book.authorName || ''}</td>
+                        <td>${book.publisherName || ''}</td>
+                        <td>${book.categoryName || ''}</td>
+                        <td>
+                            <span class="three-dot" onclick="showDropdownMenu('${book.id}', event)">&#x22EE;</span>
+                            <div class="dropdown-menu" id="dropdown-${book.id}">
+                                <a href="#" onclick="addBook();return false;">Add</a>
+                                <a href="#" onclick="updateBook('${book.id}');return false;">Update</a>
+                                <a href="#" onclick="deleteBook('${book.id}');return false;">Delete</a>
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('bookTableBody').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('bookTableBody').innerHTML = '<tr><td colspan="5">Error fetching results.</td></tr>';
+        });
+}
+
+document.addEventListener('click', function(e) {
+    // Hide all dropdowns if clicking outside
+    document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+});
+
+function showDropdownMenu(bookId, event) {
+    event.stopPropagation();
+    document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+    const menu = document.getElementById('dropdown-' + bookId);
+    if (menu) menu.classList.add('show');
+}
+function addBook() {
+    window.location.href = '/admin-pannel-add';
+}
+function updateBook(bookId) {
+    window.location.href = `/admin-pannel-update?id=${bookId}`;
+}
+function deleteBook(bookId) {
+    if (confirm('Are you sure you want to delete this book?')) {
+        fetch(`/admin/books/${bookId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken()
+            }
+        })
+        .then(response => response.json())
+        .then(() => {
+            searchBooks();
+        });
+    }
+}
+</script>
+</body>
+</html>
