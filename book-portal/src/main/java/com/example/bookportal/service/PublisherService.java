@@ -2,6 +2,8 @@ package com.example.bookportal.service;
 
 import com.example.bookportal.entity.Publisher;
 import com.example.bookportal.repository.projection.CategoryBookCountProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,5 +17,6 @@ public interface PublisherService {
 
     long getPublisherBookCount(Long id);
 
-    List<com.example.bookportal.entity.Book> getBooksByPublisher(Long publisherId);
+
+    Page<com.example.bookportal.entity.Book> getBooksByPublisher(Long publisherId, Pageable pageable);
 }

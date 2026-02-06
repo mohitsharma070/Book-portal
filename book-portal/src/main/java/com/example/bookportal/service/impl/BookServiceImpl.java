@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 @Service
 public class BookServiceImpl implements BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
@@ -21,26 +19,6 @@ public class BookServiceImpl implements BookService {
 
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-    }
-
-    @Override
-    public List<Book> getBooksByAuthorAndCategory(Long authorId, Long categoryId) {
-        logger.info("Fetching books by authorId: {} and categoryId: {}", authorId, categoryId);
-        return bookRepository
-                .findByAuthorIdAndCategoryId(authorId, categoryId);
-    }
-
-    @Override
-    public List<Book> getBooksByPublisherAndCategory(Long publisherId, Long categoryId) {
-        logger.info("Fetching books by publisherId: {} and categoryId: {}", publisherId, categoryId);
-        return bookRepository
-                .findByPublisherIdAndCategoryId(publisherId, categoryId);
-    }
-
-    @Override
-    public List<Book> getBooksByCategory(Long categoryId) {
-        logger.info("Fetching books by categoryId: {}", categoryId);
-        return bookRepository.findByCategoryId(categoryId);
     }
 
     @Override

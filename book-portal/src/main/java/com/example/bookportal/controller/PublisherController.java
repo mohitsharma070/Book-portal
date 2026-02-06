@@ -8,6 +8,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +39,18 @@ public class PublisherController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    public String publisherSummary(@PathVariable Long id, Model model) {
+    public String publisherSummary(@PathVariable Long id, Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "id") String sort,
+                                  @RequestParam(defaultValue = "ASC") String direction) {
         model.addAttribute("publisher", publisherService.getPublisherById(id));
         model.addAttribute("bookCount", publisherService.getPublisherBookCount(id));
-        model.addAttribute("books", publisherService.getBooksByPublisher(id));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        Page<com.example.bookportal.entity.Book> booksPage = publisherService.getBooksByPublisher(id, pageable);
+        model.addAttribute("books", booksPage.getContent());
         model.addAttribute("categories", publisherService.getCategoryWiseBooks(id));
+        model.addAttribute("page", booksPage);
         logger.info("Fetched details for publisher ID: {}", id);
         return "publisher-summary";
     }

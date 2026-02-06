@@ -10,6 +10,8 @@ import com.example.bookportal.repository.AuthorRepository;
 import com.example.bookportal.repository.CategoryRepository;
 import com.example.bookportal.repository.PublisherRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,38 +34,24 @@ public class AdminBookService {
         this.publisherRepository = publisherRepository;
     }
 
-    public List<BookDto> getAllBooks() {
-        return bookRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<BookDto> getAllBooks(Pageable pageable) {
+        return bookRepository.findAllBookDtos(pageable);
     }
-    public List<BookDto> searchBooks(String query) {
-        return bookRepository.findByTitleContainingIgnoreCase(query)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<BookDto> searchBooks(String query, Pageable pageable) {
+        return bookRepository.findByTitleContainingIgnoreCase(query, pageable)
+                .map(this::toDto);
     }
-
-    public List<BookDto> searchBooksByAuthor(String query) {
-        return bookRepository.findByAuthorNameContainingIgnoreCase(query)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<BookDto> searchBooksByAuthor(String query, Pageable pageable) {
+        return bookRepository.findByAuthorNameContainingIgnoreCase(query, pageable)
+                .map(this::toDto);
     }
-
-    public List<BookDto> searchBooksByPublisher(String query) {
-        return bookRepository.findByPublisherNameContainingIgnoreCase(query)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<BookDto> searchBooksByPublisher(String query, Pageable pageable) {
+        return bookRepository.findByPublisherNameContainingIgnoreCase(query, pageable)
+                .map(this::toDto);
     }
-
-    public List<BookDto> searchBooksByCategory(String query) {
-        return bookRepository.findByCategoryNameContainingIgnoreCase(query)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<BookDto> searchBooksByCategory(String query, Pageable pageable) {
+        return bookRepository.findByCategoryNameContainingIgnoreCase(query, pageable)
+                .map(this::toDto);
     }
 
     public BookDto createBook(BookDto dto) {

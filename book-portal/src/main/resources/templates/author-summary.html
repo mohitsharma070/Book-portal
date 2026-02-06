@@ -70,6 +70,25 @@
                         <br><br>
                     </div>
 
+                    <!-- PAGINATION CONTROLS -->
+                    <div align="center" th:if="${page != null && page.totalPages > 1}">
+                        <nav>
+                            <ul style="list-style:none;display:inline-flex;padding:0;">
+                                <li th:if="${page.number > 0}">
+                                    <a th:href="@{/authors/{id}(id=${author.id},page=${page.number - 1},size=${page.size})}">&laquo; Prev</a>
+                                </li>
+                                <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                    th:classappend="${i == page.number} ? 'active'">
+                                    <a th:href="@{/authors/{id}(id=${author.id},page=${i},size=${page.size})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li th:if="${page.number < page.totalPages - 1}">
+                                    <a th:href="@{/authors/{id}(id=${author.id},page=${page.number + 1},size=${page.size})}">Next &raquo;</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </center>
             </div>
         </td>

@@ -1,5 +1,6 @@
 package com.example.bookportal.repository;
 
+import com.example.bookportal.dto.BookDto;
 import com.example.bookportal.entity.Book;
 import com.example.bookportal.repository.projection.CategoryBookCountProjection;
 import org.springframework.data.domain.Page;
@@ -68,12 +69,25 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
     List<Book> findByAuthor_IdAndActiveTrue(Long authorId);
     List<Book> findByPublisher_IdAndActiveTrue(Long publisherId);
-
-    List<Book> findByTitleContainingIgnoreCase(String title);
+    Page<Book> findByTitleContainingIgnoreCase(String title, Pageable pageable);
     @Query("SELECT b FROM Book b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<Book> findByAuthorNameContainingIgnoreCase(@Param("name") String name);
+    Page<Book> findByAuthorNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
     @Query("SELECT b FROM Book b WHERE LOWER(b.publisher.publisherName) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<Book> findByPublisherNameContainingIgnoreCase(@Param("name") String name);
+    Page<Book> findByPublisherNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
     @Query("SELECT b FROM Book b WHERE LOWER(b.category.categoryName) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<Book> findByCategoryNameContainingIgnoreCase(@Param("name") String name);
+    Page<Book> findByCategoryNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
+
+    @Query("""
+        SELECT new com.example.bookportal.dto.BookDto(
+            b.id, b.title, b.price, b.imageUrl,
+            a.id, a.name,
+            c.id, c.categoryName,
+            p.id, p.publisherName
+        )
+        FROM Book b
+        LEFT JOIN b.author a
+        LEFT JOIN b.category c
+        LEFT JOIN b.publisher p
+    """)
+    Page<BookDto> findAllBookDtos(Pageable pageable);
 }

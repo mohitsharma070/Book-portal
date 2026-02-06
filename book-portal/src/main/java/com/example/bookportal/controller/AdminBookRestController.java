@@ -7,6 +7,11 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 @RestController
@@ -20,26 +25,31 @@ public class AdminBookRestController extends BaseController {
 
         @PreAuthorize("hasRole('ADMIN')")
         @GetMapping("/all")
-        public ResponseEntity<ApiResponse<List<BookDto>>> getAllBooks() {
-            List<BookDto> books = adminBookService.getAllBooks();
+        public ResponseEntity<ApiResponse<Page<BookDto>>> getAllBooks(
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int size,
+                @RequestParam(defaultValue = "id") String sort,
+                @RequestParam(defaultValue = "ASC") String direction) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+            Page<BookDto> books = adminBookService.getAllBooks(pageable);
             return ok(books);
         }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<BookDto>>> searchBooks(@RequestParam("q") String query, @RequestParam("type") String type) {
-        List<BookDto> books;
+    public ResponseEntity<ApiResponse<Page<BookDto>>> searchBooks(
+            @RequestParam("q") String query,
+            @RequestParam("type") String type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "ASC") String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        Page<BookDto> books;
         switch (type) {
-            case "Author":
-                books = adminBookService.searchBooksByAuthor(query);
-                break;
-            case "Publisher":
-                books = adminBookService.searchBooksByPublisher(query);
-                break;
-            case "Category":
-                books = adminBookService.searchBooksByCategory(query);
-                break;
-            default:
-                books = adminBookService.searchBooks(query);
+            case "Author" -> books = adminBookService.searchBooksByAuthor(query, pageable);
+            case "Publisher" -> books = adminBookService.searchBooksByPublisher(query, pageable);
+            case "Category" -> books = adminBookService.searchBooksByCategory(query, pageable);
+            default -> books = adminBookService.searchBooks(query, pageable);
         }
         return ok(books);
     }
