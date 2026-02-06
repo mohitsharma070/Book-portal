@@ -55,11 +55,11 @@
         return csrfInput ? csrfInput.value : '';
     }
     function search() {
-        var query = document.jump.T1.value;
+        var query = document.jump.T1.value ? document.jump.T1.value.trim() : '';
         var type = document.jump.menu.value;
         var page = 0;
         var size = 20;
-        var sort = type === 'Author' ? 'author' : (type === 'Publisher' ? 'publisher' : 'title');
+        var sort = type;
         var direction = 'ASC';
         if (!query) {
             document.getElementById('search-results').innerHTML = '<p>Please enter a search term.</p>';
@@ -70,6 +70,7 @@
             page: page,
             size: size,
             sort: sort,
+            type: type,
             direction: direction
         };
         fetch('/api/search', {

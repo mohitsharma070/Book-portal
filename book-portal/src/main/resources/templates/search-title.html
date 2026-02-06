@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title Search Results</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <style>
+        .search-wrapper { max-width: 1200px; margin: 20px auto; padding: 0 16px; }
+        .search-table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .search-table th, .search-table td { padding: 10px 12px; border: 1px solid #e0e6ed; text-align: left; }
+        .search-table th { background: #106194; color: #fff; font-weight: 600; }
+        .search-table tr:nth-child(even) { background: #f7f9fc; }
+        .pagination { margin: 16px 0; display: flex; justify-content: center; gap: 8px; }
+        .pagination a { padding: 8px 12px; border: 1px solid #106194; color: #106194; text-decoration: none; border-radius: 4px; }
+        .pagination span.active { padding: 8px 12px; background: #106194; color: #fff; border-radius: 4px; }
+        .error { color: #c0392b; margin: 12px 0; }
+        .summary { margin: 12px 0 16px; color: #333; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/common-header :: common-header"></div>
+<div class="search-wrapper">
+    <h1 style="color:#086194;">Title Results</h1>
+    <p class="summary">Showing books for title search: <b th:text="${query}">query</b></p>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <div th:if="${items == null || #lists.isEmpty(items)}">
+        <p>No books found for this title search.</p>
+    </div>
+
+    <div th:if="${items != null && !#lists.isEmpty(items)}" style="overflow-x:auto;">
+        <table class="search-table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${items}">
+                <td><a th:href="@{/book-details/{id}(id=${book.id})}" th:text="${book.title}">Title</a></td>
+                <td th:text="${book.authorName != null ? book.authorName : 'N/A'}">Author</td>
+                <td th:text="${book.publisherName != null ? book.publisherName : 'N/A'}">Publisher</td>
+                <td th:text="${book.categoryName != null ? book.categoryName : 'N/A'}">Category</td>
+                <td th:text="${book.price != null ? book.price : 'N/A'}">Price</td>
+                <td><a th:href="@{/book-details/{id}(id=${book.id})}">View</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination" th:if="${totalPages != null && totalPages > 1}">
+        <a th:if="${pageNumber > 0}" th:href="@{|?q=${query}&page=${pageNumber-1}&size=${pageSize}|}">&laquo; Prev</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${i} == ${pageNumber} ? 'active'">
+            <a th:if="${i} != ${pageNumber}" th:href="@{|?q=${query}&page=${i}&size=${pageSize}|}" th:text="${i + 1}"></a>
+            <span th:if="${i} == ${pageNumber}" th:text="${i + 1}" class="active"></span>
+        </span>
+        <a th:if="${pageNumber < totalPages-1}" th:href="@{|?q=${query}&page=${pageNumber+1}&size=${pageSize}|}">Next &raquo;</a>
+    </div>
+</div>
+<div th:replace="~{fragments/common-footer :: common-footer}"></div>
+</body>
+</html>

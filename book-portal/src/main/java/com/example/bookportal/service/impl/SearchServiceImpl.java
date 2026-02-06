@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import org.slf4j.Logger;
@@ -31,16 +32,21 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public SearchResult search(SearchRequest request) {
-        logger.info("SearchServiceImpl.search called: query={}, page={}, size={}, sort={}, direction={}",
-                request.getQuery(), request.getPage(), request.getSize(), request.getSort(), request.getDirection());
+        logger.info("SearchServiceImpl.search called: query={}, type={}, page={}, size={}, sort={}, direction={}",
+                request.getQuery(), request.getType(), request.getPage(), request.getSize(), request.getSort(), request.getDirection());
         String q = request.getQuery();
+        String type = normalizeType(request.getType());
 
-        Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()),
-                request.getSort() == null ? "id" : request.getSort());
+        Pageable pageable = PageRequest.of(
+                Math.max(request.getPage(), 0),
+                request.getSize(),
+                resolveSort(request.getSort(), type, request.getDirection())
+        );
 
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
+        Specification<Book> specification = BookSpecification.active()
+                .and(BookSpecification.containsText(q, type));
 
-        Page<Book> page = bookRepository.findAll(BookSpecification.containsTextInAllFields(q), pageable);
+        Page<Book> page = bookRepository.findAll(specification, pageable);
         logger.info("SearchServiceImpl.search result: totalElements={}, totalPages={}, page={}",
                 page.getTotalElements(), page.getTotalPages(), page.getNumber());
 
@@ -56,4 +62,21 @@ public class SearchServiceImpl implements SearchService {
 
         return new SearchResult(items, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
     }
+
+        private Sort resolveSort(String sortField, String type, String direction) {
+                Sort.Direction dir = Sort.Direction.fromOptionalString(direction).orElse(Sort.Direction.ASC);
+                String requested = (sortField != null && !sortField.isBlank()) ? sortField : type;
+                String property;
+                switch (requested.toUpperCase()) {
+                        case "AUTHOR" -> property = "author.name";
+                        case "PUBLISHER" -> property = "publisher.publisherName";
+                        case "CATEGORY" -> property = "category.categoryName";
+                        default -> property = "title";
+                }
+                return Sort.by(dir, property);
+        }
+
+        private String normalizeType(String type) {
+                return type == null ? "ALL" : type.trim().toUpperCase();
+        }
 }

@@ -45,10 +45,11 @@ public class AdminBookRestController extends BaseController {
             @RequestParam(defaultValue = "ASC") String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
         Page<BookDto> books;
-        switch (type) {
-            case "Author" -> books = adminBookService.searchBooksByAuthor(query, pageable);
-            case "Publisher" -> books = adminBookService.searchBooksByPublisher(query, pageable);
-            case "Category" -> books = adminBookService.searchBooksByCategory(query, pageable);
+        String normalized = type == null ? "all" : type.trim();
+        switch (normalized.toLowerCase()) {
+            case "author" -> books = adminBookService.searchBooksByAuthor(query, pageable);
+            case "publisher" -> books = adminBookService.searchBooksByPublisher(query, pageable);
+            case "category" -> books = adminBookService.searchBooksByCategory(query, pageable);
             default -> books = adminBookService.searchBooks(query, pageable);
         }
         return ok(books);

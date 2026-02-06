@@ -3,6 +3,7 @@ package com.example.bookportal.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class SearchRequest {
@@ -17,6 +18,10 @@ public class SearchRequest {
     @Min(value = 1, message = "Page size must be at least 1")
     @Max(value = 100, message = "Page size must not exceed 100")
     private int size = 20;
+
+    @NotBlank(message = "Search type is required")
+    @Pattern(regexp = "(?i)title|author|publisher|category|all", message = "Invalid search type")
+    private String type = "all";
 
     private String sort;
     private String direction = "ASC";
@@ -51,6 +56,14 @@ public class SearchRequest {
 
     public void setSort(String sort) {
         this.sort = sort;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDirection() {

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Publisher Search Results</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <style>
+        .search-wrapper { max-width: 1200px; margin: 20px auto; padding: 0 16px; }
+        .result-card { border: 1px solid #d6e3ff; border-radius: 6px; background: #fff; margin-bottom: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+        .result-header { padding: 12px 16px; background: linear-gradient(90deg, #e9f3ff, #f7fbff); border-bottom: 1px solid #d6e3ff; display: flex; justify-content: space-between; align-items: baseline; }
+        .result-header h2 { margin: 0; color: #086194; font-size: 20px; }
+        .result-header small { color: #555; }
+        .search-table { width: 100%; border-collapse: collapse; }
+        .search-table th, .search-table td { padding: 10px 12px; border: 1px solid #e0e6ed; text-align: left; }
+        .search-table th { background: #106194; color: #fff; font-weight: 600; }
+        .search-table tr:nth-child(even) { background: #f7f9fc; }
+        .pill { display: inline-block; padding: 4px 8px; border-radius: 12px; background: #eef5fb; color: #0a5385; font-size: 12px; }
+        .pagination { margin: 16px 0; display: flex; justify-content: center; gap: 8px; }
+        .pagination a { padding: 8px 12px; border: 1px solid #106194; color: #106194; text-decoration: none; border-radius: 4px; }
+        .pagination span.active { padding: 8px 12px; background: #106194; color: #fff; border-radius: 4px; }
+        .error { color: #c0392b; margin: 12px 0; }
+        .summary { margin: 12px 0 16px; color: #333; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/common-header :: common-header"></div>
+<div class="search-wrapper">
+    <h1 style="color:#086194;">Publisher Results</h1>
+    <p class="summary">Showing books for publisher search: <b th:text="${query}">query</b></p>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <div th:if="${#maps.isEmpty(grouped)}">
+        <p>No publishers found for this search.</p>
+    </div>
+
+    <div th:each="entry : ${grouped}" class="result-card">
+        <div class="result-header">
+            <h2 th:text="${entry.key}">Publisher Name</h2>
+            <small class="pill" th:text="${#lists.size(entry.value)} + ' book(s)'">0 book(s)</small>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="search-table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book : ${entry.value}">
+                    <td><a th:href="@{/book-details/{id}(id=${book.id})}" th:text="${book.title}">Title</a></td>
+                    <td th:text="${book.authorName != null ? book.authorName : 'N/A'}">Author</td>
+                    <td th:text="${book.categoryName != null ? book.categoryName : 'N/A'}">Category</td>
+                    <td th:text="${book.price != null ? book.price : 'N/A'}">Price</td>
+                    <td><a th:href="@{/book-details/{id}(id=${book.id})}">View</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pagination" th:if="${totalPages != null && totalPages > 1}">
+        <a th:if="${pageNumber > 0}" th:href="@{|?q=${query}&page=${pageNumber-1}&size=${pageSize}|}">&laquo; Prev</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${i} == ${pageNumber} ? 'active'">
+            <a th:if="${i} != ${pageNumber}" th:href="@{|?q=${query}&page=${i}&size=${pageSize}|}" th:text="${i + 1}"></a>
+            <span th:if="${i} == ${pageNumber}" th:text="${i + 1}" class="active"></span>
+        </span>
+        <a th:if="${pageNumber < totalPages-1}" th:href="@{|?q=${query}&page=${pageNumber+1}&size=${pageSize}|}">Next &raquo;</a>
+    </div>
+</div>
+<div th:replace="~{fragments/common-footer :: common-footer}"></div>
+</body>
+</html>

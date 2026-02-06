@@ -24,8 +24,8 @@ public class SearchController extends BaseController {
 
     @PostMapping("/search")
     public ResponseEntity<SearchResult> search(@Valid @RequestBody SearchRequest request) {
-        logger.info("Search requested: query={}, page={}, size={}, sort={}, direction={}",
-                request.getQuery(), request.getPage(), request.getSize(), request.getSort(), request.getDirection());
+        logger.info("Search requested: query={}, type={}, page={}, size={}, sort={}, direction={}",
+            request.getQuery(), request.getType(), request.getPage(), request.getSize(), request.getSort(), request.getDirection());
         SearchResult result = searchService.search(request);
         logger.info("Search completed: totalElements={}, totalPages={}, page={}",
                 result.getTotalElements(), result.getTotalPages(), result.getPage());

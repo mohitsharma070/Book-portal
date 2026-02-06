@@ -96,6 +96,18 @@
     <div th:if="${error}" style="color:red;text-align:center;margin-bottom:10px;">
         <p th:text="${error}"></p>
     </div>
+    <div style="display:flex;gap:10px;align-items:center;margin:10px 0;flex-wrap:wrap;">
+        <input id="searchInput" type="text" placeholder="Search by title, author, publisher, or category" style="flex:1;min-width:220px;padding:10px 12px;border:1px solid #cfd8dc;border-radius:4px;">
+        <select id="searchType" style="padding:10px 12px;border:1px solid #cfd8dc;border-radius:4px;min-width:140px;">
+            <option value="All">All</option>
+            <option value="Title">Title</option>
+            <option value="Author">Author</option>
+            <option value="Publisher">Publisher</option>
+            <option value="Category">Category</option>
+        </select>
+        <button onclick="searchBooks();" style="padding:10px 14px;background:#106194;color:#fff;border:none;border-radius:4px;cursor:pointer;">Search</button>
+        <button onclick="resetSearch();" style="padding:10px 14px;background:#eceff1;color:#106194;border:1px solid #cfd8dc;border-radius:4px;cursor:pointer;">Clear</button>
+    </div>
     <div id="bookList">
         <table class="search-table" style="width:100%;margin-top:20px;">
             <thead>
@@ -148,7 +160,7 @@ function renderBooks(books) {
 }
 
 function renderPagination(page) {
-    if (!page || page.totalPages <= 1) {
+    if (!page || typeof page.totalPages !== 'number' || page.totalPages <= 1) {
         document.getElementById('paginationControls').innerHTML = '';
         return;
     }
@@ -168,19 +180,34 @@ function renderPagination(page) {
 
 let currentPage = 0;
 let currentSize = 10;
+let currentQuery = '';
+let currentType = 'All';
+
+function buildUrl(page, size) {
+    const params = new URLSearchParams({ page: page, size: size });
+    if (currentQuery) {
+        params.set('q', currentQuery);
+        params.set('type', currentType || 'All');
+        return `/admin/books/search?${params.toString()}`;
+    }
+    return `/admin/books/all?${params.toString()}`;
+}
 
 function fetchBooks(page = 0, size = 10) {
     currentPage = page;
     currentSize = size;
-    fetch(`/admin/books/all?page=${page}&size=${size}`)
+    const url = buildUrl(page, size);
+    fetch(url)
         .then(response => response.json())
         .then(data => {
-            const books = data.data && data.data.content ? data.data.content : [];
+            const pageData = data.data || {};
+            const books = Array.isArray(pageData.content) ? pageData.content : [];
             renderBooks(books);
-            renderPagination(data.data);
+            renderPagination(pageData);
         })
         .catch(() => {
             document.getElementById('bookTableBody').innerHTML = '<tr><td colspan="5">Error fetching results.</td></tr>';
+            document.getElementById('paginationControls').innerHTML = '';
         });
 }
 
@@ -189,29 +216,25 @@ function gotoPage(page) {
 }
 
 function searchBooks() {
-    const query = document.getElementById('searchInput').value;
-    const type = document.getElementById('searchType').value;
-    if (!query) {
-        fetch('/admin/books/all')
-            .then(response => response.json())
-            .then(data => {
-                const books = Array.isArray(data.data) ? data.data : [];
-                renderBooks(books);
-            })
-            .catch(() => {
-                document.getElementById('bookTableBody').innerHTML = '<tr><td colspan="5">Error fetching results.</td></tr>';
-            });
-        return;
+    const queryInput = document.getElementById('searchInput');
+    const typeSelect = document.getElementById('searchType');
+    currentQuery = queryInput ? queryInput.value.trim() : '';
+    currentType = typeSelect ? typeSelect.value : 'All';
+    fetchBooks(0, currentSize);
+}
+
+function resetSearch() {
+    const queryInput = document.getElementById('searchInput');
+    const typeSelect = document.getElementById('searchType');
+    if (queryInput) {
+        queryInput.value = '';
     }
-    fetch(`/admin/books/search?q=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}`)
-        .then(response => response.json())
-        .then(data => {
-            const books = Array.isArray(data.data) ? data.data : [];
-            renderBooks(books);
-        })
-        .catch(() => {
-            document.getElementById('bookTableBody').innerHTML = '<tr><td colspan="5">Error fetching results.</td></tr>';
-        });
+    if (typeSelect) {
+        typeSelect.value = 'All';
+    }
+    currentQuery = '';
+    currentType = 'All';
+    fetchBooks(0, currentSize);
 }
 
 window.onload = function() {
@@ -245,7 +268,10 @@ function deleteBook(bookId) {
         })
         .then(response => response.json())
         .then(() => {
-            searchBooks();
+            fetchBooks(currentPage, currentSize);
+        })
+        .catch(() => {
+            fetchBooks(currentPage, currentSize);
         });
     }
 }

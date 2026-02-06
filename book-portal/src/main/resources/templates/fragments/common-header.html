@@ -82,71 +82,27 @@
         return csrfInput ? csrfInput.value : '';
     }
     function search() {
-        var query = document.jump.T1.value;
-        var type = document.jump.menu.value;
-        var page = 0;
-        var size = 20;
-        var sort = type === 'Author' ? 'author' : (type === 'Publisher' ? 'publisher' : 'title');
-        var direction = 'ASC';
-        if (!query) {
-            document.getElementById('search-results').innerHTML = '<p>Please enter a search term.</p>';
+        var query = document.jump.T1 && document.jump.T1.value ? document.jump.T1.value.trim() : '';
+        var type = document.jump.menu ? document.jump.menu.value : 'Title';
+        if (!query || query.length < 2) {
+            document.getElementById('search-results').innerHTML = '<p>Please enter at least 2 characters.</p>';
             return;
         }
-        const request = {
-            query: query,
-            page: page,
-            size: size,
-            sort: sort,
-            direction: direction
-        };
-        fetch('/api/search', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': getCsrfToken()
-            },
-            body: JSON.stringify(request)
-        })
-        .then(response => response.json())
-        .then(data => {
-            let html = '';
-            if (data.items && data.items.length > 0) {
-                if (type === 'Author' || type === 'Publisher') {
-                    const groupMap = {};
-                    const keyField = type === 'Author' ? 'authorName' : 'publisherName';
-                    data.items.forEach(item => {
-                        const key = item[keyField];
-                        if (!groupMap[key]) {
-                            groupMap[key] = 0;
-                        }
-                        groupMap[key]++;
-                    });
-                    html = '<div class="search-table-container" id="search-table-container">';
-                    html += `<table class="search-table"><thead><tr><th>${type}</th><th>Books</th></tr></thead><tbody>`;
-                    Object.keys(groupMap).forEach(name => {
-                        html += `<tr><td>${name}</td><td>${groupMap[name]}</td></tr>`;
-                    });
-                    html += '</tbody></table>';
-                    html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
-                    html += '</div>';
-                } else if (type === 'Title') {
-                    html = '<div class="search-table-container" id="search-table-container">';
-                    html += '<table class="search-table"><thead><tr><th>Title</th><th>Author</th><th>Publisher</th><th>Category</th></tr></thead><tbody>';
-                    data.items.forEach(item => {
-                        html += `<tr><td>${item.title}</td><td>${item.authorName}</td><td>${item.publisherName}</td><td>${item.categoryName}</td></tr>`;
-                    });
-                    html += '</tbody></table>';
-                    html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
-                    html += '</div>';
-                }
-            } else {
-                html = '<p>No results found.</p>';
-            }
-            document.getElementById('search-results').innerHTML = html;
-        })
-        .catch(() => {
-            document.getElementById('search-results').innerHTML = '<p>Error fetching results.</p>';
-        });
+
+        var path;
+        switch ((type || '').toLowerCase()) {
+            case 'author':
+                path = '/search/author';
+                break;
+            case 'publisher':
+                path = '/search/publisher';
+                break;
+            case 'title':
+            default:
+                path = '/search/title';
+                break;
+        }
+        window.location.href = path + '?q=' + encodeURIComponent(query);
     }
     </script>
 </div>
