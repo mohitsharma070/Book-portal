@@ -38,6 +38,11 @@ public class UserController extends BaseController {
                 "today",
                 LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"))
         );
+        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            model.addAttribute("role", "ADMIN");
+        } else {
+            model.addAttribute("role", "USER");
+        }
         return "dashboard";
     }
 
@@ -113,6 +118,15 @@ public class UserController extends BaseController {
         logger.info("Profile updated for user: {}", form.getUsername());
         redirectAttributes.addFlashAttribute("success", "Profile updated successfully");
         return "redirect:/edit-profile";
+    }
+
+    @GetMapping("/admin-pannel")
+    public String adminPanel(Authentication auth, Model model) {
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/?error=unauthorized";
+        }
+        model.addAttribute("username", auth.getName());
+        return "admin-pannel";
     }
 
 }

@@ -1,4 +1,3 @@
-
 package com.example.bookportal.entity;
 
 import jakarta.persistence.*;
@@ -38,6 +37,9 @@ public class User extends BaseEntity {
 
     private String secretQuestion;
     private String secretAnswer;
+
+    @Column(name = "role", nullable = false)
+    private String role = "USER";
 
     // id is inherited from BaseEntity
 
@@ -80,5 +82,12 @@ public class User extends BaseEntity {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-}
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+}

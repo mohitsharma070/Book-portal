@@ -68,4 +68,12 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
     List<Book> findByAuthor_IdAndActiveTrue(Long authorId);
     List<Book> findByPublisher_IdAndActiveTrue(Long publisherId);
+
+    List<Book> findByTitleContainingIgnoreCase(String title);
+    @Query("SELECT b FROM Book b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Book> findByAuthorNameContainingIgnoreCase(@Param("name") String name);
+    @Query("SELECT b FROM Book b WHERE LOWER(b.publisher.publisherName) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Book> findByPublisherNameContainingIgnoreCase(@Param("name") String name);
+    @Query("SELECT b FROM Book b WHERE LOWER(b.category.categoryName) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Book> findByCategoryNameContainingIgnoreCase(@Param("name") String name);
 }
