@@ -32,6 +32,12 @@ public class AdminBookService {
         this.publisherRepository = publisherRepository;
     }
 
+    public List<BookDto> getAllBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
     public List<BookDto> searchBooks(String query) {
         return bookRepository.findByTitleContainingIgnoreCase(query)
                 .stream()

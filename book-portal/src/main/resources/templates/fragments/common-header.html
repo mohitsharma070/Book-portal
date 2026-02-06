@@ -1,0 +1,153 @@
+<!-- Common Header Fragment for Book Portal -->
+<div th:fragment="common-header">
+    <table class="header-table" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td width="40%" class="logo-text">
+                <img src="/images/logo.png" alt="Book Portal Logo" class="header-logo" style="height:120px;width:auto;padding:0 16px 0 0;background:none;border:none;border-radius:0;box-shadow:none;vertical-align:middle;display:inline-block;">
+            </td>
+            <td width="30%" class="header-user">
+                <b>
+                    Welcome <span th:text="${#strings.toUpperCase(#authentication.name)}">USER</span>!
+                </b>
+                <br>
+                <font style="font-size:11px;" face="verdana, helvetica"
+                      th:text="${#dates.format(#dates.createNow(), 'MMMM dd, yyyy')}">
+                    October 28, 2006
+                </font>
+            </td>
+            <td width="30%">
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn-link">
+                        &raquo; Logout
+                    </button>
+                </form>
+                &nbsp;&nbsp;&nbsp; »
+                <a th:href="@{/user-options}">User Options</a>
+                <span th:if="${role == 'ADMIN'}">&nbsp;&nbsp;&nbsp;<a th:href="@{/admin-pannel}" style="color:#106194;font-weight:bold;">Admin Panel</a></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="center">
+                <p class="menutd">
+                    <span><font color="#85BFEB">&raquo;</font></span>
+                    <a th:href="@{/authors}" class="menutdlinks">Author Search</a>
+                    &nbsp;&nbsp;&nbsp;
+                    <span><font color="#85BFEB">&raquo;</font></span>
+                    <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>
+                    &nbsp;&nbsp;&nbsp;
+                    <span><font color="#85BFEB">&raquo;</font></span>
+                    <a th:href="@{/categories}" class="menutdlinks">Category Search</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <!-- Embedded Search Bar from Dashboard -->
+    <form name="jump" style="margin: 0; padding: 0">
+    <div align="center" style="margin-bottom: 32px;">
+        <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
+            <tbody>
+            <tr>
+                <td bgColor="#0098CA" align="center">
+                    <div align="center">
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <p align="center"><b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
+                                        <input size="60%" name="T1" />&nbsp;&nbsp;&nbsp;
+                                    </p>
+                                </td>
+                                <td>
+                                    <select name="menu">
+                                        <option value="Author">Author</option>
+                                        <option value="Publisher">Publisher</option>
+                                        <option value="Title">Title</option>
+                                    </select>
+                                    <input type="button" class="aa" value="Search" onclick="search();" style="cursor:pointer;">
+                                    <input type="button" class="bb" value="Advanced" onclick="location.href='advancedsearch.html';" style="cursor:pointer;">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="search-results" style="margin-top:20px;"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    </form>
+    <script>
+    function getCsrfToken() {
+        var csrfInput = document.querySelector('input[name="_csrf"]');
+        return csrfInput ? csrfInput.value : '';
+    }
+    function search() {
+        var query = document.jump.T1.value;
+        var type = document.jump.menu.value;
+        var page = 0;
+        var size = 20;
+        var sort = type === 'Author' ? 'author' : (type === 'Publisher' ? 'publisher' : 'title');
+        var direction = 'ASC';
+        if (!query) {
+            document.getElementById('search-results').innerHTML = '<p>Please enter a search term.</p>';
+            return;
+        }
+        const request = {
+            query: query,
+            page: page,
+            size: size,
+            sort: sort,
+            direction: direction
+        };
+        fetch('/api/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCsrfToken()
+            },
+            body: JSON.stringify(request)
+        })
+        .then(response => response.json())
+        .then(data => {
+            let html = '';
+            if (data.items && data.items.length > 0) {
+                if (type === 'Author' || type === 'Publisher') {
+                    const groupMap = {};
+                    const keyField = type === 'Author' ? 'authorName' : 'publisherName';
+                    data.items.forEach(item => {
+                        const key = item[keyField];
+                        if (!groupMap[key]) {
+                            groupMap[key] = 0;
+                        }
+                        groupMap[key]++;
+                    });
+                    html = '<div class="search-table-container" id="search-table-container">';
+                    html += `<table class="search-table"><thead><tr><th>${type}</th><th>Books</th></tr></thead><tbody>`;
+                    Object.keys(groupMap).forEach(name => {
+                        html += `<tr><td>${name}</td><td>${groupMap[name]}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
+                    html += '</div>';
+                } else if (type === 'Title') {
+                    html = '<div class="search-table-container" id="search-table-container">';
+                    html += '<table class="search-table"><thead><tr><th>Title</th><th>Author</th><th>Publisher</th><th>Category</th></tr></thead><tbody>';
+                    data.items.forEach(item => {
+                        html += `<tr><td>${item.title}</td><td>${item.authorName}</td><td>${item.publisherName}</td><td>${item.categoryName}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    html += `<p>Page ${data.page + 1} of ${data.totalPages}, Total: ${data.totalElements} books</p>`;
+                    html += '</div>';
+                }
+            } else {
+                html = '<p>No results found.</p>';
+            }
+            document.getElementById('search-results').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('search-results').innerHTML = '<p>Error fetching results.</p>';
+        });
+    }
+    </script>
+</div>
+<div th:replace="fragments/common-footer :: common-footer"></div>

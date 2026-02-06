@@ -9,80 +9,10 @@
 
 <body topmargin="0" leftmargin="0">
 
-<!-- HEADER -->
-<table class="header-table" border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr>
-        <td width="40%" class="logo-text">
-            <span class="header-logo">BOOK PORTAL</span>
-        </td>
-        <td width="30%" class="header-user">
-            &nbsp;<b>Welcome 
-            <span th:text="${#strings.toUpperCase(#authentication.name)}">USER</span>! </b>
-            <br>
-            <font style='font-size:11px;' color='#000000' face='verdana, helvetica' 
-                  th:text="${#dates.format(#dates.createNow(),'MMMM dd, yyyy')}">
-                October 28, 2006
-            </font>
-        </td>
-        <td width="30%">
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="btn-link">
-                    &raquo; Logout
-                </button>
-            </form>
-            &nbsp;&nbsp;&nbsp; » 
-            <a th:href="@{/user-options}">User Options</a>&nbsp;&nbsp;&nbsp;&nbsp;
-        </td>
-    </tr>
-    <tr>
-        <td width="100%" colspan="3" align="center">
-            <p class="menutd">
-                <span><font color="#85BFEB">&raquo;</font></span>
-                <a th:href="@{/authors}" class="menutdlinks">Author Search</a>
-                &nbsp;&nbsp;&nbsp;
-                <span><font color="#85BFEB">&raquo;</font></span>
-                <a th:href="@{/publishers}" class="menutdlinks">Publisher Search</a>
-                &nbsp;&nbsp;&nbsp;
-                <span><font color="#85BFEB">&raquo;</font></span>
-                <a th:href="@{/categories}" class="menutdlinks">Category Search</a>
-            </p>
-        </td>
-    </tr>
-</table>
 
-<!-- SEARCH BAR -->
-<div align="center">
-    <table style="border: 1px solid #006080" cellSpacing="0" cellPadding="2" width="100%" border="0" height="40">
-        <tbody>
-            <tr>
-                <td bgColor="#0098CA" align="center">
-                    <div align="center">
-                        <table border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td>
-                                    <p align="center">
-                                        <b><font color="#BDDFFF">FIND</font><font color="#7d6f06">&nbsp;</font></b>
-                                        <input size="60%" name="T1">&nbsp;&nbsp;&nbsp;
-                                    </p>
-                                </td>
-                                <td>
-                                    <form name="jump" style="margin: 0; padding: 0">
-                                        <select name="menu">
-                                            <option value="Author">Author</option>
-                                            <option value="Publisher">Publisher</option>
-                                            <option value="Title">Title</option>
-                                        </select>
-                                    </form>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<!-- HEADER -->
+<div th:replace="fragments/common-header :: common-header"></div>
+
 
 <!-- MAIN CONTENT -->
 <div align="center">
@@ -113,16 +43,7 @@
     </table>
 </div>
 <br>
-<div class="footer">
-    &copy;2006 Book Portal
-</div>
-<div class="footer-links">
-    <a href="#">Subscription Services</a> |
-    <a href="#">About Us</a> |
-    <a href="#">Contact Us</a> |
-    <a href="#">Privacy Policy</a> |
-    <a href="#">Admin</a>
-</div>
 
 </body>
+<div th:replace="~{fragments/common-footer :: common-footer}"></div>
 </html>

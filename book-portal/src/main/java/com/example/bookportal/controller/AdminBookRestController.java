@@ -18,6 +18,12 @@ public class AdminBookRestController extends BaseController {
         this.adminBookService = adminBookService;
     }
 
+        @PreAuthorize("hasRole('ADMIN')")
+        @GetMapping("/all")
+        public ResponseEntity<ApiResponse<List<BookDto>>> getAllBooks() {
+            List<BookDto> books = adminBookService.getAllBooks();
+            return ok(books);
+        }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<BookDto>>> searchBooks(@RequestParam("q") String query, @RequestParam("type") String type) {
